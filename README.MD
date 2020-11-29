@@ -2,3 +2,4 @@
 
 #### Variations on arrays
 - [Array2D](src/main/resources/Array2D.md). A two-dimensional array with fixed dimensions. Useful for board games.
+- [SortedArray](src/main/resources/SortedArray.md). An array that is always sorted.
