@@ -12,11 +12,11 @@ import java.util.List;
  */
 public class Array2D<E> {
 
-    private final int columns;
+    private final int _columns;
 
-    private final int rows;
+    private final int _rows;
 
-    private final List<E> storage;
+    private final List<E> _storage;
 
     public Array2D(int columns, int rows) {
         this(columns, rows, null);
@@ -25,51 +25,51 @@ public class Array2D<E> {
     public Array2D(int columns, int rows, E initialValue) {
         Assert.isTrue(columns >= 0, "Columns must be positive");
         Assert.isTrue(rows >= 0, "Rows must be positive");
-        this.columns = columns;
-        this.rows = rows;
+        _columns = columns;
+        _rows = rows;
         int size = columns * rows;
         List<E> storage = new ArrayList<>(size);
         for (int i = 0; i < size; ++i) {
             storage.add(initialValue);
         }
-        this.storage = storage;
+        _storage = storage;
     }
 
     public int getColumns() {
-        return columns;
+        return _columns;
     }
 
     public int getRows() {
-        return rows;
+        return _rows;
     }
 
     public E get(int column, int row) {
-        Assert.isTrue(column < columns, "Column " + column + " Index is out of range");
-        Assert.isTrue(row < rows, "Row " + row + " Index is out of range");
-        return storage.get(row * columns + column);
+        Assert.isTrue(column < _columns, "Column " + column + " Index is out of range");
+        Assert.isTrue(row < _rows, "Row " + row + " Index is out of range");
+        return _storage.get(row * _columns + column);
     }
 
     public void set(int column, int row, E newValue) {
-        Assert.isTrue(column < columns, "Column " + column + " Index is out of range");
-        Assert.isTrue(row < rows, "Row " + row + " Index is out of range");
-        storage.set(row * columns + column, newValue);
+        Assert.isTrue(column < _columns, "Column " + column + " Index is out of range");
+        Assert.isTrue(row < _rows, "Row " + row + " Index is out of range");
+        _storage.set(row * _columns + column, newValue);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        for (int i = 0; i < columns; ++i) {
+        for (int i = 0; i < _columns; ++i) {
             sb.append("[");
-            for (int j = 0; j < rows; j++) {
+            for (int j = 0; j < _rows; j++) {
                 E e = get(i, j);
                 sb.append(e == this ? "(this Array2D)" : e);
-                if (j != rows - 1) {
+                if (j != _rows - 1) {
                     sb.append(",").append(" ");
                 }
             }
             sb.append("]");
-            if (i != columns - 1) {
+            if (i != _columns - 1) {
                 sb.append(",").append(" ");
             }
         }

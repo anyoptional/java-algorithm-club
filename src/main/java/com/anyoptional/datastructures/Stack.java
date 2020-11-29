@@ -8,18 +8,18 @@ import java.util.Objects;
 
 public class Stack<E> {
 
-    private final List<E> storage = new ArrayList<>();
+    private final List<E> _storage = new ArrayList<>();
 
     public boolean isEmpty() {
-        return storage.isEmpty();
+        return _storage.isEmpty();
     }
 
     public int size() {
-        return storage.size();
+        return _storage.size();
     }
 
     public void push(E element) {
-        storage.add(element);
+        _storage.add(element);
     }
 
     @Nullable
@@ -27,7 +27,7 @@ public class Stack<E> {
         if (isEmpty()) {
             return null;
         }
-        return storage.remove(size() - 1);
+        return _storage.remove(size() - 1);
     }
 
     @Nullable
@@ -35,7 +35,7 @@ public class Stack<E> {
         if (isEmpty()) {
             return null;
         }
-        return storage.get(size() - 1);
+        return _storage.get(size() - 1);
     }
 
     @Override
@@ -43,17 +43,17 @@ public class Stack<E> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Stack<?> stack = (Stack<?>) o;
-        return Objects.equals(storage, stack.storage);
+        return Objects.equals(_storage, stack._storage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(storage);
+        return Objects.hash(_storage);
     }
 
     @Override
     public String toString() {
-        return storage.toString();
+        return _storage.toString();
     }
 
 }

@@ -8,18 +8,18 @@ import java.util.Objects;
 
 public class Queue<E> {
 
-    private final List<E> storage = new LinkedList<>();
+    private final List<E> _storage = new LinkedList<>();
 
     public boolean isEmpty() {
-        return storage.isEmpty();
+        return _storage.isEmpty();
     }
 
     public int size() {
-        return storage.size();
+        return _storage.size();
     }
 
     public void enqueue(E element) {
-        storage.add(element);
+        _storage.add(element);
     }
 
     @Nullable
@@ -27,7 +27,7 @@ public class Queue<E> {
         if (isEmpty()) {
             return null;
         }
-        return storage.remove(0);
+        return _storage.remove(0);
     }
 
     @Nullable
@@ -35,25 +35,25 @@ public class Queue<E> {
         if (isEmpty()) {
             return null;
         }
-        return storage.get(0);
+        return _storage.get(0);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Queue<?> stack = (Queue<?>) o;
-        return Objects.equals(storage, stack.storage);
+        Queue<?> queue = (Queue<?>) o;
+        return Objects.equals(_storage, queue._storage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(storage);
+        return Objects.hash(_storage);
     }
 
     @Override
     public String toString() {
-        return storage.toString();
+        return _storage.toString();
     }
 
 }
