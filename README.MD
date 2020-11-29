@@ -6,3 +6,4 @@
 
 #### Queues
 - [Stack](src/main/resources/Stack.md). Last-in, first-out!
+- [Queue](src/main/resources/Queue.md). First-in, first-out!
