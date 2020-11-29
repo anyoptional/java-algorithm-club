@@ -17,9 +17,9 @@ public abstract class Assert {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalStateException if {@code expression} is {@code false}
      */
-    public static void state(boolean expression, String message) {
+    public static void state(boolean expression, String message, Object... args) {
         if (!expression) {
-            throw new IllegalStateException(message);
+            throw new IllegalStateException(MessageFormatter.arrayFormat(message, args).first);
         }
     }
 
@@ -31,9 +31,9 @@ public abstract class Assert {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if {@code expression} is {@code false}
      */
-    public static void isTrue(boolean expression, String message) {
+    public static void isTrue(boolean expression, String message, Object... args) {
         if (!expression) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(MessageFormatter.arrayFormat(message, args).first);
         }
     }
 
@@ -44,9 +44,9 @@ public abstract class Assert {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object is not {@code null}
      */
-    public static void isNull(@Nullable Object object, String message) {
+    public static void isNull(@Nullable Object object, String message, Object... args) {
         if (object != null) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(MessageFormatter.arrayFormat(message, args).first);
         }
     }
 
@@ -57,39 +57,9 @@ public abstract class Assert {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object is {@code null}
      */
-    public static void notNull(@Nullable Object object, String message) {
+    public static void notNull(@Nullable Object object, String message, Object... args) {
         if (object == null) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    /**
-     * Assert that the given String is not empty; that is,
-     * it must not be {@code null} and not the empty String.
-     * <pre class="code">Assert.hasLength(name, "Name must not be empty");</pre>
-     * @param text the String to check
-     * @param message the exception message to use if the assertion fails
-     * @throws IllegalArgumentException if the text is empty
-     * @see StringUtils#hasLength
-     */
-    public static void hasLength(@Nullable String text, String message) {
-        if (!StringUtils.hasLength(text)) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    /**
-     * Assert that the given String contains valid text content; that is, it must not
-     * be {@code null} and must contain at least one non-whitespace character.
-     * <pre class="code">Assert.hasText(name, "'name' must not be empty");</pre>
-     * @param text the String to check
-     * @param message the exception message to use if the assertion fails
-     * @throws IllegalArgumentException if the text does not contain valid text content
-     * @see StringUtils#hasText
-     */
-    public static void hasText(@Nullable String text, String message) {
-        if (!StringUtils.hasText(text)) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(MessageFormatter.arrayFormat(message, args).first);
         }
     }
 
@@ -101,9 +71,9 @@ public abstract class Assert {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object array is {@code null} or contains no elements
      */
-    public static void notEmpty(@Nullable Object[] array, String message) {
+    public static void notEmpty(@Nullable Object[] array, String message, Object... args) {
         if (ObjectUtils.isEmpty(array)) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(MessageFormatter.arrayFormat(message, args).first);
         }
     }
 
@@ -115,11 +85,11 @@ public abstract class Assert {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object array contains a {@code null} element
      */
-    public static void noNullElements(@Nullable Object[] array, String message) {
+    public static void noNullElements(@Nullable Object[] array, String message, Object... args) {
         if (array != null) {
             for (Object element : array) {
                 if (element == null) {
-                    throw new IllegalArgumentException(message);
+                    throw new IllegalArgumentException(MessageFormatter.arrayFormat(message, args).first);
                 }
             }
         }
@@ -134,9 +104,9 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the collection is {@code null} or
      * contains no elements
      */
-    public static void notEmpty(@Nullable Collection<?> collection, String message) {
+    public static void notEmpty(@Nullable Collection<?> collection, String message, Object... args) {
         if (CollectionUtils.isEmpty(collection)) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(MessageFormatter.arrayFormat(message, args).first);
         }
     }
 
@@ -148,116 +118,10 @@ public abstract class Assert {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the map is {@code null} or contains no entries
      */
-    public static void notEmpty(@Nullable Map<?, ?> map, String message) {
+    public static void notEmpty(@Nullable Map<?, ?> map, String message, Object... args) {
         if (CollectionUtils.isEmpty(map)) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(MessageFormatter.arrayFormat(message, args).first);
         }
-    }
-
-    /**
-     * Assert that the provided object is an instance of the provided class.
-     * <pre class="code">Assert.instanceOf(Foo.class, foo, "Foo expected");</pre>
-     * @param type the type to check against
-     * @param obj the object to check
-     * @param message a message which will be prepended to provide further context.
-     * If it is empty or ends in ":" or ";" or "," or ".", a full exception message
-     * will be appended. If it ends in a space, the name of the offending object's
-     * type will be appended. In any other case, a ":" with a space and the name
-     * of the offending object's type will be appended.
-     * @throws IllegalArgumentException if the object is not an instance of type
-     */
-    public static void isInstanceOf(Class<?> type, @Nullable Object obj, String message) {
-        notNull(type, "Type to check against must not be null");
-        if (!type.isInstance(obj)) {
-            instanceCheckFailed(type, obj, message);
-        }
-    }
-
-    /**
-     * Assert that the provided object is an instance of the provided class.
-     * <pre class="code">Assert.instanceOf(Foo.class, foo);</pre>
-     * @param type the type to check against
-     * @param obj the object to check
-     * @throws IllegalArgumentException if the object is not an instance of type
-     */
-    public static void isInstanceOf(Class<?> type, @Nullable Object obj) {
-        isInstanceOf(type, obj, "");
-    }
-
-    /**
-     * Assert that {@code superType.isAssignableFrom(subType)} is {@code true}.
-     * <pre class="code">Assert.isAssignable(Number.class, myClass, "Number expected");</pre>
-     * @param superType the super type to check against
-     * @param subType the sub type to check
-     * @param message a message which will be prepended to provide further context.
-     * If it is empty or ends in ":" or ";" or "," or ".", a full exception message
-     * will be appended. If it ends in a space, the name of the offending sub type
-     * will be appended. In any other case, a ":" with a space and the name of the
-     * offending sub type will be appended.
-     * @throws IllegalArgumentException if the classes are not assignable
-     */
-    public static void isAssignable(Class<?> superType, @Nullable Class<?> subType, String message) {
-        notNull(superType, "Super type to check against must not be null");
-        if (subType == null || !superType.isAssignableFrom(subType)) {
-            assignableCheckFailed(superType, subType, message);
-        }
-    }
-
-    /**
-     * Assert that {@code superType.isAssignableFrom(subType)} is {@code true}.
-     * <pre class="code">Assert.isAssignable(Number.class, myClass);</pre>
-     * @param superType the super type to check
-     * @param subType the sub type to check
-     * @throws IllegalArgumentException if the classes are not assignable
-     */
-    public static void isAssignable(Class<?> superType, Class<?> subType) {
-        isAssignable(superType, subType, "");
-    }
-
-
-    private static void instanceCheckFailed(Class<?> type, @Nullable Object obj, @Nullable String msg) {
-        String className = (obj != null ? obj.getClass().getName() : "null");
-        String result = "";
-        boolean defaultMessage = true;
-        if (StringUtils.hasLength(msg)) {
-            if (endsWithSeparator(msg)) {
-                result = msg + " ";
-            }
-            else {
-                result = messageWithTypeName(msg, className);
-                defaultMessage = false;
-            }
-        }
-        if (defaultMessage) {
-            result = result + ("Object of class [" + className + "] must be an instance of " + type);
-        }
-        throw new IllegalArgumentException(result);
-    }
-
-    private static void assignableCheckFailed(Class<?> superType, @Nullable Class<?> subType, @Nullable String msg) {
-        String result = "";
-        boolean defaultMessage = true;
-        if (StringUtils.hasLength(msg)) {
-            if (endsWithSeparator(msg)) {
-                result = msg + " ";
-            }
-            else {
-                result = messageWithTypeName(msg, subType);
-                defaultMessage = false;
-            }
-        }
-        if (defaultMessage) {
-            result = result + (subType + " is not assignable to " + superType);
-        }
-        throw new IllegalArgumentException(result);
-    }
-
-    private static boolean endsWithSeparator(String msg) {
-        return (msg.endsWith(":") || msg.endsWith(";") || msg.endsWith(",") || msg.endsWith("."));
-    }
-
-    private static String messageWithTypeName(String msg, @Nullable Object typeName) {
-        return msg + (msg.endsWith(" ") ? "" : ": ") + typeName;
     }
 
 }

@@ -4,9 +4,6 @@ import com.anyoptional.lang.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
 
 public abstract class ObjectUtils {
 
@@ -19,41 +16,6 @@ public abstract class ObjectUtils {
     private static final String ARRAY_END = "}";
     private static final String EMPTY_ARRAY = ARRAY_START + ARRAY_END;
     private static final String ARRAY_ELEMENT_SEPARATOR = ", ";
-
-
-    /**
-     * Return whether the given throwable is a checked exception:
-     * that is, neither a RuntimeException nor an Error.
-     * @param ex the throwable to check
-     * @return whether the throwable is a checked exception
-     * @see Exception
-     * @see RuntimeException
-     * @see Error
-     */
-    public static boolean isCheckedException(Throwable ex) {
-        return !(ex instanceof RuntimeException || ex instanceof Error);
-    }
-
-    /**
-     * Check whether the given exception is compatible with the specified
-     * exception types, as declared in a throws clause.
-     * @param ex the exception to check
-     * @param declaredExceptions the exception types declared in the throws clause
-     * @return whether the given exception is compatible
-     */
-    public static boolean isCompatibleWithThrowsClause(Throwable ex, @Nullable Class<?>... declaredExceptions) {
-        if (!isCheckedException(ex)) {
-            return true;
-        }
-        if (declaredExceptions != null) {
-            for (Class<?> declaredException : declaredExceptions) {
-                if (declaredException.isInstance(ex)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     /**
      * Determine whether the given object is an array:
@@ -68,79 +30,9 @@ public abstract class ObjectUtils {
      * Determine whether the given array is empty:
      * i.e. {@code null} or of zero length.
      * @param array the array to check
-     * @see #isEmpty(Object)
      */
     public static boolean isEmpty(@Nullable Object[] array) {
         return (array == null || array.length == 0);
-    }
-
-    /**
-     * Determine whether the given object is empty.
-     * <p>This method supports the following object types.
-     * <ul>
-     * <li>{@code Optional}: considered empty if {@link Optional#empty()}</li>
-     * <li>{@code Array}: considered empty if its length is zero</li>
-     * <li>{@link CharSequence}: considered empty if its length is zero</li>
-     * <li>{@link Collection}: delegates to {@link Collection#isEmpty()}</li>
-     * <li>{@link Map}: delegates to {@link Map#isEmpty()}</li>
-     * </ul>
-     * <p>If the given object is non-null and not one of the aforementioned
-     * supported types, this method returns {@code false}.
-     * @param obj the object to check
-     * @return {@code true} if the object is {@code null} or <em>empty</em>
-     * @since 4.2
-     * @see Optional#isPresent()
-     * @see ObjectUtils#isEmpty(Object[])
-     * @see StringUtils#hasLength(CharSequence)
-     * @see StringUtils#isEmpty(Object)
-     * @see CollectionUtils#isEmpty(Collection)
-     * @see CollectionUtils#isEmpty(Map)
-     */
-    @SuppressWarnings("rawtypes")
-    public static boolean isEmpty(@Nullable Object obj) {
-        if (obj == null) {
-            return true;
-        }
-
-        if (obj instanceof Optional) {
-            return !((Optional) obj).isPresent();
-        }
-        if (obj instanceof CharSequence) {
-            return ((CharSequence) obj).length() == 0;
-        }
-        if (obj.getClass().isArray()) {
-            return Array.getLength(obj) == 0;
-        }
-        if (obj instanceof Collection) {
-            return ((Collection) obj).isEmpty();
-        }
-        if (obj instanceof Map) {
-            return ((Map) obj).isEmpty();
-        }
-
-        // else
-        return false;
-    }
-
-    /**
-     * Unwrap the given object which is potentially a {@link Optional}.
-     * @param obj the candidate object
-     * @return either the value held within the {@code Optional}, {@code null}
-     * if the {@code Optional} is empty, or simply the given object as-is
-     * @since 5.0
-     */
-    @Nullable
-    public static Object unwrapOptional(@Nullable Object obj) {
-        if (obj instanceof Optional) {
-            Optional<?> optional = (Optional<?>) obj;
-            if (!optional.isPresent()) {
-                return null;
-            }
-            Object result = optional.get();
-            Assert.isTrue(!(result instanceof Optional), "Multi-level Optional usage not supported");
-            return result;
-        }
-        return obj;
     }
 
     /**
@@ -160,77 +52,6 @@ public abstract class ObjectUtils {
             }
         }
         return false;
-    }
-
-    /**
-     * Check whether the given array of enum constants contains a constant with the given name,
-     * ignoring case when determining a match.
-     * @param enumValues the enum values to check, typically obtained via {@code MyEnum.values()}
-     * @param constant the constant name to find (must not be null or empty string)
-     * @return whether the constant has been found in the given array
-     */
-    public static boolean containsConstant(Enum<?>[] enumValues, String constant) {
-        return containsConstant(enumValues, constant, false);
-    }
-
-    /**
-     * Check whether the given array of enum constants contains a constant with the given name.
-     * @param enumValues the enum values to check, typically obtained via {@code MyEnum.values()}
-     * @param constant the constant name to find (must not be null or empty string)
-     * @param caseSensitive whether case is significant in determining a match
-     * @return whether the constant has been found in the given array
-     */
-    public static boolean containsConstant(Enum<?>[] enumValues, String constant, boolean caseSensitive) {
-        for (Enum<?> candidate : enumValues) {
-            if (caseSensitive ? candidate.toString().equals(constant) :
-                    candidate.toString().equalsIgnoreCase(constant)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Case insensitive alternative to {@link Enum#valueOf(Class, String)}.
-     * @param <E> the concrete Enum type
-     * @param enumValues the array of all Enum constants in question, usually per {@code Enum.values()}
-     * @param constant the constant to get the enum value of
-     * @throws IllegalArgumentException if the given constant is not found in the given array
-     * of enum values. Use {@link #containsConstant(Enum[], String)} as a guard to avoid this exception.
-     */
-    public static <E extends Enum<?>> E caseInsensitiveValueOf(E[] enumValues, String constant) {
-        for (E candidate : enumValues) {
-            if (candidate.toString().equalsIgnoreCase(constant)) {
-                return candidate;
-            }
-        }
-        throw new IllegalArgumentException("Constant [" + constant + "] does not exist in enum type " +
-                enumValues.getClass().getComponentType().getName());
-    }
-
-    /**
-     * Append the given object to the given array, returning a new array
-     * consisting of the input array contents plus the given object.
-     * @param array the array to append to (can be {@code null})
-     * @param obj the object to append
-     * @return the new array (of the same component type; never {@code null})
-     */
-    public static <A, O extends A> A[] addObjectToArray(@Nullable A[] array, @Nullable O obj) {
-        Class<?> compType = Object.class;
-        if (array != null) {
-            compType = array.getClass().getComponentType();
-        }
-        else if (obj != null) {
-            compType = obj.getClass();
-        }
-        int newArrLength = (array != null ? array.length + 1 : 1);
-        @SuppressWarnings("unchecked")
-        A[] newArr = (A[]) Array.newInstance(compType, newArrLength);
-        if (array != null) {
-            System.arraycopy(array, 0, newArr, 0, array.length);
-        }
-        newArr[newArr.length - 1] = obj;
-        return newArr;
     }
 
     /**

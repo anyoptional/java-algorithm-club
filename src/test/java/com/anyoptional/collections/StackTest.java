@@ -1,4 +1,4 @@
-package com.anyoptional.datastructures;
+package com.anyoptional.collections;
 
 import org.junit.Test;
 

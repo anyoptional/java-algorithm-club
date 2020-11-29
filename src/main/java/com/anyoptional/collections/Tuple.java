@@ -1,14 +1,19 @@
-package com.anyoptional.datastructures;
+package com.anyoptional.collections;
+
+import com.anyoptional.lang.Nullable;
+import com.anyoptional.util.ObjectUtils;
 
 import java.util.Objects;
 
 public class Tuple<A, B> {
 
+    @Nullable
     public final A first;
 
+    @Nullable
     public final B second;
 
-    public Tuple(A first, B second) {
+    public Tuple(@Nullable A first, @Nullable B second) {
         this.first = first;
         this.second = second;
     }
@@ -29,7 +34,11 @@ public class Tuple<A, B> {
 
     @Override
     public String toString() {
-        return "(" + first + ", " + second + ")";
+        return "("
+                + ObjectUtils.nullSafeToString(first)
+                + ", "
+                + ObjectUtils.nullSafeToString(second)
+                + ")";
     }
 
 }
