@@ -404,6 +404,32 @@ public class HeapTest {
         assertTrue(verifyMaxHeap(h));
     }
 
+    @Test
+    public void testMergeMaxHeap() {
+        Heap<Integer> h1 = new Heap<>();
+        h1.addAll(Arrays.asList(1, 2, 3));
+
+        Heap<Integer> h2 = new Heap<>();
+        h2.addAll(Arrays.asList(4, 5, 6));
+
+        h1.merge(h2);
+        assertTrue(verifyMaxHeap(h1));
+        assertFalse(verifyMinHeap(h1));
+    }
+
+    @Test
+    public void testMergeMinHeap() {
+        Heap<Integer> h1 = new Heap<>(($0, $1) -> $1 - $0);
+        h1.addAll(Arrays.asList(5, 3, 1));
+
+        Heap<Integer> h2 = new Heap<>();
+        h2.addAll(Arrays.asList(6, 4, 2));
+
+        h1.merge(h2);
+        assertFalse(verifyMaxHeap(h1));
+        assertTrue(verifyMinHeap(h1));
+    }
+
 
     private <E> List<E> getStorage(Heap<E> heap) {
         Field field = ReflectionUtils.findField(Heap.class, "_storage");

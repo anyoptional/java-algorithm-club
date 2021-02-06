@@ -130,6 +130,14 @@ public class Heap<E> {
     }
 
     /**
+     * 堆合并（左式堆可实现更高效的合并策略）
+     */
+    public void merge(Heap<E> another) {
+        Assert.notNull(another, "another heap is required");
+        addAll(another._storage);
+    }
+
+    /**
      * 上滤
      */
     private void shiftUp(int childIndex) {
