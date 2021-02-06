@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.TYPE, ElementType.METHOD,
         ElementType.FIELD, ElementType.CONSTRUCTOR})
-public @interface VisibleForTesting {
+public @interface Internal {
 }
