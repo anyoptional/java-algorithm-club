@@ -148,7 +148,7 @@ public class HeapTest {
         h1.addAll(Arrays.asList(1, 2, 3, 4, 5, 6, 7));
         assertTrue(verifyMaxHeap(h1));
         assertFalse(verifyMinHeap(h1));
-        assertEquals(getStorage(h1), Arrays.asList(7, 4, 6, 1, 3, 2, 5));
+        assertEquals(getStorage(h1), Arrays.asList(7, 5, 6, 4, 2, 1, 3));
         assertFalse(h1.isEmpty());
         assertEquals(h1.size(), 7);
         assertEquals((int) h1.peek(), 7);
@@ -157,7 +157,7 @@ public class HeapTest {
         h2.addAll(Arrays.asList(7, 6, 5, 4, 3, 2, 1));
         assertTrue(verifyMaxHeap(h2));
         assertFalse(verifyMinHeap(h2));
-//        assertEquals(h2._storage, Arrays.asList(7, 6, 5, 4, 3, 2, 1));
+        assertEquals(getStorage(h2), Arrays.asList(7, 6, 5, 4, 3, 2, 1));
         assertFalse(h2.isEmpty());
         assertEquals(h2.size(), 7);
         assertEquals((int) h2.peek(), 7);
@@ -166,7 +166,7 @@ public class HeapTest {
         h3.addAll(Arrays.asList(4, 1, 3, 2, 16, 9, 10, 14, 8, 7));
         assertTrue(verifyMaxHeap(h3));
         assertFalse(verifyMinHeap(h3));
-//        assertEquals(h3._storage, Arrays.asList(16, 14, 10, 8, 7, 9, 3, 2, 4, 1));
+        assertEquals(getStorage(h3), Arrays.asList(16, 14, 10, 8, 7, 9, 3, 2, 4, 1));
         assertFalse(h3.isEmpty());
         assertEquals(h3.size(), 10);
         assertEquals((int) h3.peek(), 16);
@@ -175,7 +175,6 @@ public class HeapTest {
         h4.addAll(Arrays.asList(27, 17, 3, 16, 13, 10, 1, 5, 7, 12, 4, 8, 9, 0));
         assertTrue(verifyMaxHeap(h4));
         assertFalse(verifyMinHeap(h4));
-//        assertEquals(h4._storage, Arrays.asList(27, 17, 10, 16, 13, 9, 1, 5, 7, 12, 4, 8, 3, 0));
         assertFalse(h4.isEmpty());
         assertEquals(h4.size(), 14);
         assertEquals((int) h4.peek(), 27);
@@ -201,7 +200,7 @@ public class HeapTest {
         h2.addAll(Arrays.asList(7, 6, 5, 4, 3, 2, 1));
         assertFalse(verifyMaxHeap(h2));
         assertTrue(verifyMinHeap(h2));
-//        assertEquals(h2._storage, Arrays.asList(7, 6, 5, 4, 3, 2, 1));
+        assertEquals(getStorage(h2), Arrays.asList(1, 3, 2, 4, 6, 7, 5));
         assertFalse(h2.isEmpty());
         assertEquals(h2.size(), 7);
         assertEquals((int) h2.peek(), 1);
@@ -210,7 +209,6 @@ public class HeapTest {
         h3.addAll(Arrays.asList(4, 1, 3, 2, 16, 9, 10, 14, 8, 7));
         assertFalse(verifyMaxHeap(h3));
         assertTrue(verifyMinHeap(h3));
-//        assertEquals(h3._storage, Arrays.asList(16, 14, 10, 8, 7, 9, 3, 2, 4, 1));
         assertFalse(h3.isEmpty());
         assertEquals(h3.size(), 10);
         assertEquals((int) h3.peek(), 1);
@@ -219,7 +217,6 @@ public class HeapTest {
         h4.addAll(Arrays.asList(27, 17, 3, 16, 13, 10, 1, 5, 7, 12, 4, 8, 9, 0));
         assertFalse(verifyMaxHeap(h4));
         assertTrue(verifyMinHeap(h4));
-//        assertEquals(h4._storage, Arrays.asList(27, 17, 10, 16, 13, 9, 1, 5, 7, 12, 4, 8, 3, 0));
         assertFalse(h4.isEmpty());
         assertEquals(h4.size(), 14);
         assertEquals((int) h4.peek(), 0);
@@ -376,7 +373,7 @@ public class HeapTest {
     public void testInsertArrayAndRemove() {
         Heap<Integer> heap = new Heap<>();
         heap.addAll(Arrays.asList(1, 3, 2, 7, 5, 9));
-        assertEquals(Arrays.asList(9, 5, 7, 1, 3, 2), getStorage(heap));
+        assertEquals(Arrays.asList(9, 7, 2, 3, 5, 1), getStorage(heap));
 
         assertEquals(9, (int) heap.remove());
         assertEquals(7, (int) heap.remove());
