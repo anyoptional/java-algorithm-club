@@ -1,4 +1,4 @@
-### This repo is fully backed by [swift-algorithm-club](https://github.com/raywenderlich/swift-algorithm-club), with rewritten in Java code
+### This repo is backed by [swift-algorithm-club](https://github.com/raywenderlich/swift-algorithm-club) & [数据结构（C++语言版）](https://book.douban.com/subject/25859528/), with rewritten in Java code
 
 #### Variations on arrays
 - [Array2D](src/main/resources/Array2D.md). A two-dimensional array with fixed dimensions. Useful for board games.
