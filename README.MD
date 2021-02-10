@@ -10,3 +10,4 @@
 
 #### Trees
 - [Heap](src/main/resources/Heap.md). A complete binary tree stored in an array, so it doesn't use pointers. Makes a great priority queue.
+- [Binary Search Tree (BST)](src/main/resources/BinarySearchTree.md). A binary tree that orders its nodes in a way that allows for fast queries.
