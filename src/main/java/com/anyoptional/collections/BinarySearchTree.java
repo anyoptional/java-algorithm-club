@@ -1,6 +1,7 @@
 package com.anyoptional.collections;
 
 import com.anyoptional.lang.Nullable;
+import com.anyoptional.lang.VisibleForInternal;
 import com.anyoptional.lang.VisibleForTesting;
 import com.anyoptional.util.Assert;
 import com.anyoptional.util.Comparators;
@@ -16,7 +17,8 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
     private int _size = 0;
 
     @Nullable
-    private BinaryNode<K, V> _root;
+    @VisibleForInternal
+    BinaryNode<K, V> _root;
 
     @Nullable
     private Comparator<? super K> _comparator;
@@ -74,21 +76,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      * 向树中插入一对键值对
      */
     public void insert(K key, @Nullable V value) {
-        Assert.notNull(key, "key is required");
-        if (isEmpty()) {
-            _root = new BinaryNode<>(key, value);
-            _size += 1;
-            return;
-        }
-        BinaryNode<K, V> hot = findInsertionPoint(key);
-        BinaryNode<K, V> node = new BinaryNode<>(key, value, hot);
-        if (Comparators.compare(key, hot.entry.getKey(), _comparator) >= 0) {
-            hot.right = node;
-        } else {
-            hot.left = node;
-        }
-        hot.updateHeightAbove();
-        _size += 1;
+        doInsert(key, value);
     }
 
     public void addAll(Collection<? extends K> c) {
@@ -109,54 +97,8 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      * 删除树中`最高`的、拥有指定key的节点
      */
     @Nullable
-    @SuppressWarnings("all")
     public Entry<K, V> remove(K key) {
-        BinaryNode<K, V> node = searchBinaryNode(key);
-        if (node == null) return null;
-        BinaryNode<K, V> replacement = null;
-        if (node.hasBothChildren()) {
-            BinaryNode<K, V> next = node.successor();
-            if (next != null) {
-                // 交换entry
-                node.entry.setKey(next.entry.getKey());
-                node.entry.setValue(next.entry.getValue());
-                // 退化成只有一个孩子的平凡情况
-                node = next;
-                replacement = next.right;
-            }
-        } else {
-            // 只有一个孩子的情况下
-            // 直接由孩子节点顶替即可
-            if (node.hasLeftChild()) {
-                replacement = node.left;
-            } else {
-                replacement = node.right;
-            }
-        }
-        // 重新关联父节点，如果后继存在的话
-        if (replacement != null) {
-            replacement.parent = node.parent;
-        }
-        // 如果被删除的是根节点
-        if (node.isRoot()) {
-            // replacement就成为新的根节点
-            _root = replacement;
-        } else {
-            // 否则replacement顶替其父节点的位置
-            if (node.isLeftChild()) {
-                node.parent.left = replacement;
-            } else {
-                node.parent.right = replacement;
-            }
-            node.parent.updateHeightAbove();
-        }
-
-        _size -= 1;
-        // 清空node，方便GC
-        node.left = null;
-        node.right = null;
-        node.parent = null;
-        return node.entry;
+        return doRemove(key).first;
     }
 
     /**
@@ -203,12 +145,6 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
         return new Iter();
     }
 
-    @Nullable
-    @VisibleForTesting
-    BinaryNode<K, V> root() {
-        return _root;
-    }
-
     @SuppressWarnings("all")
     protected BinaryNode<K, V> findInsertionPoint(K key) {
         BinaryNode<K, V> hot = null;
@@ -240,6 +176,82 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
             }
         }
         return null;
+    }
+
+    /**
+     * 插入一对键值对，返回可能失衡的节点
+     */
+    @Nullable
+    protected BinaryNode<K, V> doInsert(K key, @Nullable V value) {
+        Assert.notNull(key, "key is required");
+        if (isEmpty()) {
+            _root = new BinaryNode<>(key, value);
+            _size += 1;
+            return null;
+        }
+        BinaryNode<K, V> hot = findInsertionPoint(key);
+        BinaryNode<K, V> node = new BinaryNode<>(key, value, hot);
+        if (Comparators.compare(key, hot.entry.getKey(), _comparator) >= 0) {
+            hot.right = node;
+        } else {
+            hot.left = node;
+        }
+        hot.updateHeightAbove();
+        _size += 1;
+        return hot;
+    }
+
+    @SuppressWarnings("all")
+    protected Tuple<Entry<K, V>, BinaryNode<K, V>> doRemove(K key) {
+        BinaryNode<K, V> node = searchBinaryNode(key);
+        if (node == null) return Tuple.empty();
+        BinaryNode<K, V> replacement = null;
+        if (node.hasBothChildren()) {
+            BinaryNode<K, V> next = node.successor();
+            if (next != null) {
+                // 交换entry
+                node.entry.setKey(next.entry.getKey());
+                node.entry.setValue(next.entry.getValue());
+                // 退化成只有一个孩子的平凡情况
+                node = next;
+                replacement = next.right;
+            }
+        } else {
+            // 只有一个孩子的情况下
+            // 直接由孩子节点顶替即可
+            if (node.hasLeftChild()) {
+                replacement = node.left;
+            } else {
+                replacement = node.right;
+            }
+        }
+        // 记录下可能失衡的节点
+        BinaryNode<K, V> hot = node.parent;
+        // 重新关联父节点，如果后继存在的话
+        if (replacement != null) {
+            replacement.parent = hot;
+        }
+        // 如果被删除的是根节点
+        if (node.isRoot()) {
+            // replacement就成为新的根节点
+            _root = replacement;
+        } else {
+            // 否则replacement顶替其父节点的位置
+            if (node.isLeftChild()) {
+                node.parent.left = replacement;
+            } else {
+                node.parent.right = replacement;
+            }
+            node.parent.updateHeightAbove();
+        }
+        // 规模递减
+        _size -= 1;
+        // 清空node，方便GC
+        node.left = null;
+        node.right = null;
+        node.parent = null;
+        // 返回被删除的entry和可能失衡的节点
+        return new Tuple<>(node.entry, hot);
     }
 
     private class Iter implements Iterator<Entry<K, V>> {

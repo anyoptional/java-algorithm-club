@@ -11,3 +11,4 @@
 #### Trees
 - [Heap](src/main/resources/Heap.md). A complete binary tree stored in an array, so it doesn't use pointers. Makes a great priority queue.
 - [Binary Search Tree (BST)](src/main/resources/BinarySearchTree.md). A binary tree that orders its nodes in a way that allows for fast queries.
+- [AVLTree](src/main/resources/AVLTree.md). An AVL tree is a self-balancing form of a [binary search tree](src/main/resources/BinarySearchTree.md), in which the height of subtrees differ at most by only 1.

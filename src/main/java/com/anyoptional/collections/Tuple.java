@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class Tuple<A, B> {
 
+    private static final Tuple<?, ?> EMPTY = new Tuple<>(null, null);
+
     @Nullable
     public final A first;
 
@@ -16,6 +18,11 @@ public class Tuple<A, B> {
     public Tuple(@Nullable A first, @Nullable B second) {
         this.first = first;
         this.second = second;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <A, B> Tuple<A, B> empty() {
+        return (Tuple<A, B>) EMPTY;
     }
 
     @Override

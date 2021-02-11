@@ -22,8 +22,8 @@ public class BinarySearchTreeTest {
         tree.insert(8, "A");
         assertFalse(tree.isEmpty());
         assertEquals(tree.size(), 1);
-        assertEquals(tree.root().minimum().entry.getValue(), "A");
-        assertEquals(tree.root().maximum().entry.getValue(), "A");
+        assertEquals(tree._root.minimum().entry.getValue(), "A");
+        assertEquals(tree._root.maximum().entry.getValue(), "A");
         assertEquals(tree.height(), 0);
         assertTrue(tree.containsKey(8));
         assertEquals("A", tree.searchValue(8));
@@ -42,8 +42,8 @@ public class BinarySearchTreeTest {
         assertNull(tree.searchBinaryNode(99));
         assertFalse(tree.containsKey(99));
 
-        assertEquals((int) tree.root().minimum().entry.getKey(), 3);
-        assertEquals((int) tree.root().maximum().entry.getKey(), 16);
+        assertEquals((int) tree._root.minimum().entry.getKey(), 3);
+        assertEquals((int) tree._root.maximum().entry.getKey(), 16);
 
         assertEquals(tree.height(), 3);
 
@@ -90,8 +90,8 @@ public class BinarySearchTreeTest {
         assertEquals(node3.height(), 0);
         assertEquals(node1.height(), 1);
 
-        assertEquals((int) tree.root().minimum().entry.getValue(), 3);
-        assertEquals((int) tree.root().maximum().entry.getValue(), 10);
+        assertEquals((int) tree._root.minimum().entry.getValue(), 3);
+        assertEquals((int) tree._root.maximum().entry.getValue(), 10);
         assertEquals(Arrays.asList(3, 5, 8, 10), toKeyList(tree));
     }
 
@@ -112,15 +112,15 @@ public class BinarySearchTreeTest {
         tree.addAll(Arrays.asList(8, 5, 10, 3, 12, 9, 6, 16));
 
         List<Integer> inOrder = new ArrayList<>();
-        tree.root().traverseInOrder($0 -> inOrder.add($0.entry.getKey()));
+        tree._root.traverseInOrder($0 -> inOrder.add($0.entry.getKey()));
         assertEquals(inOrder, Arrays.asList(3, 5, 6, 8, 9, 10, 12, 16));
 
         List<Integer> preOrder = new ArrayList<>();
-        tree.root().traversePreOrder($0 -> preOrder.add($0.entry.getKey()));
+        tree._root.traversePreOrder($0 -> preOrder.add($0.entry.getKey()));
         assertEquals(preOrder, Arrays.asList(8, 5, 3, 6, 10, 9, 12, 16));
 
         List<Integer> postOrder = new ArrayList<>();
-        tree.root().traversePostOrder($0 -> postOrder.add($0.entry.getKey()));
+        tree._root.traversePostOrder($0 -> postOrder.add($0.entry.getKey()));
         assertEquals(postOrder, Arrays.asList(3, 6, 5, 9, 16, 12, 10, 8));
     }
 
@@ -134,8 +134,8 @@ public class BinarySearchTreeTest {
         assertEquals(tree.size(), 8);
         assertEquals(toKeyList(tree), Arrays.asList(3, 5, 6, 8, 9, 10, 12, 16));
 
-        assertEquals((int) tree.root().minimum().entry.getKey(), 3);
-        assertEquals((int) tree.root().maximum().entry.getKey(), 16);
+        assertEquals((int) tree._root.minimum().entry.getKey(), 3);
+        assertEquals((int) tree._root.maximum().entry.getKey(), 16);
 
         assertEquals(tree.height(), 7);
 
@@ -150,15 +150,15 @@ public class BinarySearchTreeTest {
         tree.addAll(Arrays.asList(8, 5, 10, 4));
 
         BinaryNode<Integer, Integer> node8 = tree.searchBinaryNode(8);
-        assertEquals(tree.root(), node8);
+        assertEquals(tree._root, node8);
 
         BinaryNode<Integer, Integer> node10 = tree.searchBinaryNode(10);
         assertNull(node10.left);
         assertNull(node10.right);
-        assertTrue(tree.root().right == node10);
+        assertTrue(tree._root.right == node10);
 
         BinaryNode<Integer, Integer> node5 = tree.searchBinaryNode(5);
-        assertTrue(tree.root().left == node5);
+        assertTrue(tree._root.left == node5);
 
         BinaryNode<Integer, Integer> node4 = tree.searchBinaryNode(4);
         assertTrue(node5.left == node4);
@@ -168,10 +168,10 @@ public class BinarySearchTreeTest {
         assertNull(node5.left);
 
         tree.remove(5);
-        assertNull(tree.root().left);
+        assertNull(tree._root.left);
 
         tree.remove(10);
-        assertNull(tree.root().right);
+        assertNull(tree._root.right);
 
         assertEquals(tree.size(), 1);
         assertEquals(toKeyList(tree), Collections.singletonList(8));
@@ -187,8 +187,8 @@ public class BinarySearchTreeTest {
         assertTrue(node5 == node4.parent);
 
         tree.remove(5);
-        assertTrue(tree.root().left == node4);
-        assertTrue(tree.root() == node4.parent);
+        assertTrue(tree._root.left == node4);
+        assertTrue(tree._root == node4.parent);
         assertNull(node4.left);
         assertNull(node4.right);
         assertEquals(tree.size(), 4);
@@ -200,8 +200,8 @@ public class BinarySearchTreeTest {
         assertTrue(node10 == node9.parent);
 
         tree.remove(10);
-        assertTrue(tree.root().right == node9);
-        assertTrue(tree.root() == node9.parent);
+        assertTrue(tree._root.right == node9);
+        assertTrue(tree._root == node9.parent);
         assertNull(node9.left);
         assertNull(node9.right);
         assertEquals(tree.size(), 3);
@@ -219,8 +219,8 @@ public class BinarySearchTreeTest {
         assertTrue(node5 == node6.parent);
 
         tree.remove(5);
-        assertTrue(tree.root().left == node6);
-        assertTrue(tree.root() == node6.parent);
+        assertTrue(tree._root.left == node6);
+        assertTrue(tree._root == node6.parent);
         assertNull(node6.left);
         assertNull(node6.right);
         assertEquals(tree.size(), 4);
@@ -232,8 +232,8 @@ public class BinarySearchTreeTest {
         assertTrue(node10 == node11.parent);
 
         tree.remove(10);
-        assertTrue(tree.root().right == node11);
-        assertTrue(tree.root() == node11.parent);
+        assertTrue(tree._root.right == node11);
+        assertTrue(tree._root == node11.parent);
         assertNull(node11.left);
         assertNull(node11.right);
         assertEquals(tree.size(), 3);
@@ -254,7 +254,7 @@ public class BinarySearchTreeTest {
 
         tree.remove(5);
         assertEquals((int)node5.entry.getKey(), 6);
-        assertEquals(tree.root().left.entry, node6.entry);
+        assertEquals(tree._root.left.entry, node6.entry);
     }
 
     @Test
@@ -267,8 +267,8 @@ public class BinarySearchTreeTest {
         BinaryNode<Integer, Integer> node9 = tree.searchBinaryNode(9);
         tree.remove(8);
 
-        assertEquals((int)tree.root().entry.getKey(), 9);
-        assertEquals(tree.root().size(), 8);
+        assertEquals((int)tree._root.entry.getKey(), 9);
+        assertEquals(tree._root.size(), 8);
         assertEquals(toKeyList(tree), Arrays.asList(4, 5, 9, 10, 11, 13, 15, 20));
 
         assertEquals((int)oldRoot.entry.getKey(), 9);

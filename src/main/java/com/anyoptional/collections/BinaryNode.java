@@ -1,13 +1,9 @@
 package com.anyoptional.collections;
 
 import com.anyoptional.lang.Nullable;
-import com.anyoptional.lang.VisibleForInternal;
 import com.anyoptional.util.Assert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -17,19 +13,15 @@ import java.util.function.Consumer;
  */
 class BinaryNode<K, V> {
 
-    @VisibleForInternal
     final Entry<K, V> entry;
 
     @Nullable
-    @VisibleForInternal
     BinaryNode<K, V> parent;
 
     @Nullable
-    @VisibleForInternal
     BinaryNode<K, V> left;
 
     @Nullable
-    @VisibleForInternal
     BinaryNode<K, V> right;
 
     /**
@@ -40,7 +32,6 @@ class BinaryNode<K, V> {
     /**
      * 初始化根节点
      */
-    @VisibleForInternal
     BinaryNode(K key) {
         this(key, null);
     }
@@ -48,7 +39,6 @@ class BinaryNode<K, V> {
     /**
      * 初始化根节点
      */
-    @VisibleForInternal
     BinaryNode(K key, @Nullable V value) {
         this(key, value, null);
     }
@@ -56,7 +46,6 @@ class BinaryNode<K, V> {
     /**
      * 初始化一个叶节点，并指定其父节点
      */
-    @VisibleForInternal
     BinaryNode(K key, @Nullable V value, @Nullable BinaryNode<K, V> parent) {
         this(new Entry<>(key, value), parent);
     }
@@ -64,57 +53,65 @@ class BinaryNode<K, V> {
     /**
      * 初始化一个叶节点，并指定其父节点
      */
-    @VisibleForInternal
     BinaryNode(Entry<K, V> entry, @Nullable BinaryNode<K, V> parent) {
         this.entry = entry;
         this.parent = parent;
     }
 
-    public int height() {
+    int height() {
         return height;
     }
 
     /**
      * 以当前节点为根的子树规模
      */
-    public int size() {
+    int size() {
         int ls = left != null ? left.size() : 0;
         int rs = right != null ? right.size() : 0;
         return ls + rs + 1;
     }
 
-    public boolean isRoot() {
+    boolean isRoot() {
         return parent == null;
     }
 
-    public boolean isLeaf() {
+    boolean isLeaf() {
         return left == null && right == null;
     }
 
     @SuppressWarnings("all")
-    public boolean isLeftChild() {
+    boolean isLeftChild() {
         return !isRoot() && parent.left == this;
     }
 
     @SuppressWarnings("all")
-    public boolean isRightChild() {
+    boolean isRightChild() {
         return !isRoot() && parent.right == this;
     }
 
-    public boolean hasLeftChild() {
+    boolean hasLeftChild() {
         return left != null;
     }
 
-    public boolean hasRightChild() {
+    boolean hasRightChild() {
         return right != null;
     }
 
-    public boolean hasAnyChild() {
+    boolean hasAnyChild() {
         return hasLeftChild() || hasRightChild();
     }
 
-    public boolean hasBothChildren() {
+    boolean hasBothChildren() {
         return hasLeftChild() && hasRightChild();
+    }
+
+    /**
+     * AVL平衡当且仅当左、右子树高度差不超过1
+     */
+    boolean isAvlBalanced() {
+        int lh = left != null ? left.height : -1;
+        int rh = right != null ? right.height : -1;
+        return Math.abs(lh - rh) <= 1;
     }
 
     /**
@@ -122,7 +119,7 @@ class BinaryNode<K, V> {
      */
     @Nullable
     @SuppressWarnings("all")
-    public BinaryNode<K, V> uncle() {
+    BinaryNode<K, V> uncle() {
         if (isRoot() || parent.isRoot()) {
             return null;
         }
@@ -135,7 +132,7 @@ class BinaryNode<K, V> {
      */
     @Nullable
     @SuppressWarnings("all")
-    public BinaryNode<K, V> sibling() {
+    BinaryNode<K, V> sibling() {
         if (isRoot()) {
             return null;
         }
@@ -147,7 +144,7 @@ class BinaryNode<K, V> {
      */
     @Nullable
     @SuppressWarnings("all")
-    public BinaryNode<K, V> grandParent() {
+    BinaryNode<K, V> grandParent() {
         if (isRoot()) {
             return null;
         }
@@ -159,7 +156,7 @@ class BinaryNode<K, V> {
      */
     @Nullable
     @SuppressWarnings("all")
-    public BinaryNode<K, V> successor() {
+    BinaryNode<K, V> successor() {
         // 如果存在右子树
         // 后继节点必是右子树最左侧的那一个节点
         if (hasRightChild()) {
@@ -183,7 +180,7 @@ class BinaryNode<K, V> {
      */
     @Nullable
     @SuppressWarnings("all")
-    public BinaryNode<K, V> predecessor() {
+    BinaryNode<K, V> predecessor() {
         // 如果存在左子树
         // 前驱节点必是左子树最右侧的那一个节点
         if (hasLeftChild()) {
@@ -205,7 +202,7 @@ class BinaryNode<K, V> {
     /**
      * 以当前节点为根的BST的最小节点
      */
-    public BinaryNode<K, V> minimum() {
+    BinaryNode<K, V> minimum() {
         BinaryNode<K, V> cur = this;
         while (cur.left != null) {
             cur = cur.left;
@@ -216,7 +213,7 @@ class BinaryNode<K, V> {
     /**
      * 以当前节点为根的BST的最大节点
      */
-    public BinaryNode<K, V> maximum() {
+    BinaryNode<K, V> maximum() {
         BinaryNode<K, V> cur = this;
         while (cur.right != null) {
             cur = cur.right;
@@ -228,7 +225,6 @@ class BinaryNode<K, V> {
      * 更新当前节点的高度，约定空节点高度为-1
      * 节点高度 = 左右子树中节点较高者 + 1
      */
-    @VisibleForInternal
     void updateHeight() {
         int lh = left != null ? left.height : -1;
         int rh = right != null ? right.height : -1;
@@ -238,7 +234,6 @@ class BinaryNode<K, V> {
     /**
      * 更新当前节点及历代祖先的高度
      */
-    @VisibleForInternal
     void updateHeightAbove() {
         BinaryNode<K, V> cur = this;
         while (cur != null) {
@@ -254,10 +249,84 @@ class BinaryNode<K, V> {
     }
 
     /**
+     * 左、右孩子中最高的那个节点
+     */
+    @Nullable
+    BinaryNode<K, V> highestChild() {
+        int lh = left != null ? left.height() : -1;
+        int rh = right != null ? right.height() : -1;
+        // 左子树高选左孩子
+        if (lh > rh) {
+            return left;
+        }
+        // 右子树高选右孩子
+        if (lh < rh) {
+            return right;
+        }
+        // 左右同高选和g同侧的孩子节点
+        if (isLeftChild()) {
+            return left;
+        }
+        return right;
+    }
+
+    /**
+     * 右旋
+     */
+    @SuppressWarnings("all")
+    void zig() {
+        BinaryNode<K, V> g = this;
+        BinaryNode<K, V> p = g.left;
+        // p成为新的父节点
+        p.parent = g.parent;
+        if (g.parent != null) {
+            if (g.isLeftChild()) {
+                g.parent.left = p;
+            } else {
+                g.parent.right = p;
+            }
+        }
+        // p的右孩子成为g的左孩子
+        g.left = p.right;
+        if (p.right != null) {
+            p.right.parent = g;
+        }
+        // g成为p的右孩子
+        p.right = g;
+        g.parent = p;
+    }
+
+    /**
+     * 左旋
+     */
+    @SuppressWarnings("all")
+    void zag() {
+        BinaryNode<K, V> g = this;
+        BinaryNode<K, V> p = g.right;
+        // p成为新的父节点
+        p.parent = g.parent;
+        if (g.parent != null) {
+            if (g.isLeftChild()) {
+                g.parent.left = p;
+            } else {
+                g.parent.right = p;
+            }
+        }
+        // p的左孩子成为g的右孩子
+        g.right = p.left;
+        if (p.left != null) {
+            p.left.parent = g;
+        }
+        // g成为p的左孩子
+        p.left = g;
+        g.parent = p;
+    }
+
+    /**
      * 先序遍历
      */
     @SuppressWarnings("all")
-    public void traversePreOrder(Consumer<BinaryNode<K, V>> consumer) {
+    void traversePreOrder(Consumer<BinaryNode<K, V>> consumer) {
         Assert.notNull(consumer, "consumer is required");
         Stack<BinaryNode<K, V>> stack = new Stack<>();
         BinaryNode<K, V> cur = this;
@@ -282,7 +351,7 @@ class BinaryNode<K, V> {
      * 中序遍历
      */
     @SuppressWarnings("all")
-    public void traverseInOrder(Consumer<BinaryNode<K, V>> consumer) {
+    void traverseInOrder(Consumer<BinaryNode<K, V>> consumer) {
         Assert.notNull(consumer, "consumer is required");
         Stack<BinaryNode<K, V>> stack = new Stack<>();
         BinaryNode<K, V> cur = this;
@@ -308,7 +377,7 @@ class BinaryNode<K, V> {
      * 后序遍历
      */
     @SuppressWarnings("all")
-    public void traversePostOrder(Consumer<BinaryNode<K, V>> consumer) {
+    void traversePostOrder(Consumer<BinaryNode<K, V>> consumer) {
         Assert.notNull(consumer, "consumer is required");
         Stack<BinaryNode<K, V>> stack = new Stack<>();
         BinaryNode<K, V> cur = this;
@@ -341,7 +410,7 @@ class BinaryNode<K, V> {
      * 层次遍历
      */
     @SuppressWarnings("all")
-    public void traverseLevel(Consumer<BinaryNode<K, V>> consumer) {
+    void traverseLevel(Consumer<BinaryNode<K, V>> consumer) {
         Assert.notNull(consumer, "consumer is required");
         Queue<BinaryNode<K, V>> queue = new Queue<>();
         queue.enqueue(this);
