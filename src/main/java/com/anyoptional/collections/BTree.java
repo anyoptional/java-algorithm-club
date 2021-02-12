@@ -5,12 +5,13 @@ import com.anyoptional.lang.VisibleForTesting;
 import com.anyoptional.util.Assert;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
  * 所谓m阶BTree，是说它除根节点外，其它节点
- *  1. 至少有[ceil(m / 2 - 1)]个Entry
- *  2. 至多有[m - 1]个Entry
+ * 1. 至少有[ceil(m / 2 - 1)]个Entry
+ * 2. 至多有[m - 1]个Entry
  * 对于根节点，无论是多少阶的BTree，它都可以只有
  * 一个节点。
  */
@@ -56,6 +57,23 @@ public class BTree<K, V> {
             children.add(rhs);
         }
 
+        public void traverseInOrder(Consumer<Entry<K, V>> consumer) {
+            Assert.notNull(consumer, "consumer is required");
+            for (int i = 0; i < entries.size(); i++) {
+                Node<K, V> child = children.get(i);
+                if (child != null) {
+                    child.traverseInOrder(consumer);
+                }
+                consumer.accept(entries.get(i));
+            }
+            if (!children.isEmpty()) {
+                Node<K, V> child = children.get(children.size() - 1);
+                if (child != null) {
+                    child.traverseInOrder(consumer);
+                }
+            }
+        }
+
     }
 
     private int _size;
@@ -66,6 +84,7 @@ public class BTree<K, V> {
 
     /**
      * BTree的阶次，至少为3（2-4树）
+     *
      * @apiNote 2-4树和红黑树有很深的渊源，下回分解
      */
     private final int _order;
@@ -138,7 +157,14 @@ public class BTree<K, V> {
 
     @Nullable
     public Entry<K, V> remove(K key) {
+
         return null;
+    }
+
+    @SuppressWarnings("all")
+    public void traverseInOrder(Consumer<Entry<K, V>> consumer) {
+        if (isEmpty()) return;
+        _root.traverseInOrder(consumer);
     }
 
     @VisibleForTesting

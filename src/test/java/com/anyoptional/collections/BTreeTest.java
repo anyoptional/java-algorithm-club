@@ -2,6 +2,11 @@ package com.anyoptional.collections;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Consumer;
+
 import static org.junit.Assert.*;
 
 public class BTreeTest {
@@ -198,8 +203,27 @@ public class BTreeTest {
     }
 
     @Test
-    public void testSearch() {
-
+    public void testRandomInsert() {
+        for (int i = 0; i < 10; i++) {
+            Random random = new Random();
+            BTree<Integer, Integer> bTree = new BTree<>();
+            for (int j = 0; j < 100; j++) {
+                bTree.insert(random.nextInt(100), j);
+            }
+            List<Integer> keys = new ArrayList<>();
+            bTree.traverseInOrder(new Consumer<Entry<Integer, Integer>>() {
+                @Override
+                public void accept(Entry<Integer, Integer> integerIntegerEntry) {
+                    keys.add(integerIntegerEntry.getKey());
+                }
+            });
+            assertSorted(keys);
+        }
     }
 
+    private <K extends Comparable<K>> void assertSorted(List<K> list) {
+        for (int i = 1; i < list.size(); i++) {
+            assertTrue(list.get(i - 1).compareTo(list.get(i)) <= 0);
+        }
+    }
 }
