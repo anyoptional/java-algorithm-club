@@ -1,7 +1,6 @@
 package com.anyoptional.collections;
 
 import com.anyoptional.lang.Nullable;
-import com.anyoptional.lang.VisibleForInternal;
 import com.anyoptional.lang.VisibleForTesting;
 import com.anyoptional.util.Assert;
 import com.anyoptional.util.Comparators;
@@ -17,13 +16,14 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
     private int _size = 0;
 
     @Nullable
-    @VisibleForInternal
+    @VisibleForTesting
     BinaryNode<K, V> _root;
 
     @Nullable
-    private Comparator<? super K> _comparator;
+    private final Comparator<? super K> _comparator;
 
     public BinarySearchTree() {
+        _comparator = null;
     }
 
     public BinarySearchTree(Comparator<? super K> comparator) {

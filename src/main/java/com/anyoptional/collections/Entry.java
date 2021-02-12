@@ -1,7 +1,7 @@
 package com.anyoptional.collections;
 
-import com.anyoptional.lang.VisibleForInternal;
 import com.anyoptional.lang.Nullable;
+import com.anyoptional.lang.VisibleForTesting;
 
 import java.util.Map;
 import java.util.Objects;
@@ -13,7 +13,7 @@ public class Entry<K, V> implements Map.Entry<K, V> {
     @Nullable
     private V _value;
 
-    @VisibleForInternal
+    @VisibleForTesting
     Entry(K key, @Nullable V value) {
         // assert key != null
         _key = key;
@@ -28,7 +28,7 @@ public class Entry<K, V> implements Map.Entry<K, V> {
     /**
      * Package visible for internal ops
      */
-    @VisibleForInternal
+    @VisibleForTesting
     void setKey(K key) {
         _key = key;
     }
