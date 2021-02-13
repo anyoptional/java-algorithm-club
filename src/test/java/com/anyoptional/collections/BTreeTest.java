@@ -113,117 +113,165 @@ public class BTreeTest {
     }
 
     @Test
-    public void testInsertDuplicate() {
-        BTree<Integer, Integer> bTree = new BTree<>();
-        bTree.insert(1, 11);
-        bTree.insert(1, 22);
-        bTree.insert(1, 33);
-        bTree.insert(1, 44);
-        bTree.insert(1, 55);
-        bTree.insert(1, 66);
-        bTree.insert(1, 77);
-
-        assertFalse(bTree.isEmpty());
-        assertEquals(7, bTree.size());
-        assertNotNull(bTree._root);
-
-        assertEquals(1, bTree._root.entries.size());
-        assertEquals(2, bTree._root.children.size());
-        assertEquals(77, (int)bTree._root.entries.get(0).getValue());
-
-        BTree.Node<Integer, Integer> node7 =  bTree._root;
-        assertEquals(bTree._root, node7);
-        assertNotNull(node7);
-        assertNull(node7.parent);
-        assertEquals(node7.entries.size(), 1);
-        assertEquals((int)node7.entries.get(0).getValue(), 77);
-        assertEquals(node7.children.size(), 2);
-        assertNotNull(node7.children.get(0));
-        assertEquals(33, (int)node7.children.get(0).entries.get(0).getValue());
-        assertNotNull(node7.children.get(1));
-        assertEquals(55, (int)node7.children.get(1).entries.get(0).getValue());
-
-        BTree.Node<Integer, Integer> node3 =  node7.children.get(0);
-        assertNotNull(node3);
-        assertEquals(node3.parent, node7);
-        assertEquals(node3.entries.size(), 1);
-        assertEquals((int)node3.entries.get(0).getValue(), 33);
-        assertEquals(node3.children.size(), 2);
-        assertNotNull(node3.children.get(0));
-        assertEquals(11, (int)node3.children.get(0).entries.get(0).getValue());
-        assertNotNull(node3.children.get(1));
-        assertEquals(22, (int)node3.children.get(1).entries.get(0).getValue());
-
-        BTree.Node<Integer, Integer> node5 =  node7.children.get(1);
-        assertNotNull(node5);
-        assertEquals(node5.parent, node7);
-        assertEquals(node5.entries.size(), 1);
-        assertEquals((int)node5.entries.get(0).getValue(), 55);
-        assertEquals(node5.children.size(), 2);
-        assertNotNull(node5.children.get(0));
-        assertEquals(66, (int)node5.children.get(0).entries.get(0).getValue());
-        assertNotNull(node5.children.get(1));
-        assertEquals(44, (int)node5.children.get(1).entries.get(0).getValue());
-
-        BTree.Node<Integer, Integer> node1 = node3.children.get(0);
-        assertNotNull(node1);
-        assertEquals(node1.parent, node3);
-        assertEquals(node1.entries.size(), 1);
-        assertEquals((int)node1.entries.get(0).getValue(), 11);
-        assertEquals(node1.children.size(), 2);
-        assertNull(node1.children.get(0));
-        assertNull(node1.children.get(1));
-
-        BTree.Node<Integer, Integer> node2 =  node3.children.get(1);
-        assertNotNull(node2);
-        assertEquals(node2.parent, node3);
-        assertEquals(node2.entries.size(), 1);
-        assertEquals((int)node2.entries.get(0).getValue(), 22);
-        assertEquals(node2.children.size(), 2);
-        assertNull(node2.children.get(0));
-        assertNull(node2.children.get(1));
-
-        BTree.Node<Integer, Integer> node6 =  node5.children.get(0);
-        assertNotNull(node6);
-        assertEquals(node6.parent, node5);
-        assertEquals(node6.entries.size(), 1);
-        assertEquals((int)node6.entries.get(0).getValue(), 66);
-        assertEquals(node6.children.size(), 2);
-        assertNull(node6.children.get(0));
-        assertNull(node6.children.get(1));
-
-        BTree.Node<Integer, Integer> node4 =  node5.children.get(1);
-        assertNotNull(node4);
-        assertEquals(node4.parent, node5);
-        assertEquals(node4.entries.size(), 1);
-        assertEquals((int)node4.entries.get(0).getValue(), 44);
-        assertEquals(node4.children.size(), 2);
-        assertNull(node4.children.get(0));
-        assertNull(node4.children.get(1));
-    }
-
-    @Test
     public void testRandomInsert() {
         for (int i = 0; i < 10; i++) {
             Random random = new Random();
-            BTree<Integer, Integer> bTree = new BTree<>();
-            for (int j = 0; j < 100; j++) {
+            BTree<Integer, Integer> bTree = new BTree<>(3 + random.nextInt(5));
+            for (int j = 0; j < 1000; j++) {
+                bTree.insert(random.nextInt(100), j);
+                List<Integer> keys = new ArrayList<>();
+                bTree.traverseInOrder(new Consumer<Entry<Integer, Integer>>() {
+                    @Override
+                    public void accept(Entry<Integer, Integer> integerIntegerEntry) {
+                        keys.add(integerIntegerEntry.getKey());
+                    }
+                });
+                assertEquals(bTree.size(), j + 1);
+                assertEquals(keys.size(), j + 1);
+                assertSorted(keys);
+            }
+        }
+    }
+
+    @Test
+    public void testRemoveRoot() {
+        BTree<Integer, Integer> bTree = new BTree<>();
+        bTree.insert(3, null);
+        bTree.insert(2, null);
+        bTree.insert(1, null);
+        bTree.insert(7, null);
+        bTree.insert(5, null);
+        bTree.insert(10, null);
+        bTree.insert(9, null);
+        assertEquals(bTree.size(), 7);
+        assertFalse(bTree.isEmpty());
+
+        BTree.Node<Integer, Integer> node5 =  bTree.searchNode(5).first;
+        assertEquals(bTree._root, node5);
+        assertNotNull(node5);
+
+        Entry<Integer, Integer> remove5 = bTree.remove(5);
+        assertEquals(bTree.size(), 6);
+        assertFalse(bTree.isEmpty());
+        assertEquals(5, (int)remove5.getKey());
+        assertNull(remove5.getValue());
+
+        BTree.Node<Integer, Integer> node2 =  bTree.searchNode(2).first;
+        assertEquals(bTree._root, node2);
+        assertNotNull(node2);
+
+        BTree.Node<Integer, Integer> node7 =  bTree.searchNode(7).first;
+        assertEquals(node2, node7);
+        assertEquals(bTree._root, node7);
+        assertNotNull(node7);
+        assertEquals(node7.entries.size(), 2);
+        assertEquals(node7.children.size(), 3);
+
+        Entry<Integer, Integer> remove2 = bTree.remove(2);
+        assertEquals(bTree.size(), 5);
+        assertFalse(bTree.isEmpty());
+        assertEquals(2, (int)remove2.getKey());
+
+        node7 = bTree.searchNode(7).first;
+        BTree.Node<Integer, Integer> node3 =  bTree.searchNode(3).first;
+        BTree.Node<Integer, Integer> node9 =  bTree.searchNode(9).first;
+        assertNotEquals(bTree._root, node7);
+        assertEquals(bTree._root, node3);
+        assertNotNull(node3);
+        assertEquals(node3, node9);
+        assertEquals(bTree._root, node9);
+        assertNotNull(node9);
+        assertEquals(node9.entries.size(), 2);
+        assertEquals(node9.children.size(), 3);
+
+        Entry<Integer, Integer> remove9 = bTree.remove(9);
+        assertEquals(bTree.size(), 4);
+        assertFalse(bTree.isEmpty());
+        assertEquals(9, (int)remove9.getKey());
+
+        node3 = bTree.searchNode(3).first;
+        assertEquals(bTree._root, node3);
+        assertEquals(node3.entries.size(), 1);
+        assertEquals(node3.children.size(), 2);
+
+        Entry<Integer, Integer> remove3 = bTree.remove(3);
+        assertEquals(bTree.size(), 3);
+        assertFalse(bTree.isEmpty());
+        assertEquals(3, (int)remove3.getKey());
+
+        node7 = bTree.searchNode(7).first;
+        assertEquals(bTree._root, node7);
+        assertEquals(node7.entries.size(), 1);
+        assertEquals(node7.children.size(), 2);
+
+        Entry<Integer, Integer> remove7 = bTree.remove(7);
+        assertEquals(bTree.size(), 2);
+        assertFalse(bTree.isEmpty());
+        assertEquals(7, (int)remove7.getKey());
+
+        BTree.Node<Integer, Integer> node1 = bTree.searchNode(1).first;
+        assertEquals(bTree._root, node1);
+        assertEquals(node1.entries.size(), 2);
+        assertEquals(node1.children.size(), 3);
+        BTree.Node<Integer, Integer> node10 = bTree.searchNode(10).first;
+        assertEquals(bTree._root, node10);
+        assertEquals(node1, node10);
+        assertEquals(node10.entries.size(), 2);
+        assertEquals(node10.children.size(), 3);
+
+        Entry<Integer, Integer> remove1 = bTree.remove(1);
+        assertEquals(bTree.size(), 1);
+        assertFalse(bTree.isEmpty());
+        assertEquals(1, (int)remove1.getKey());
+
+        node10 = bTree.searchNode(10).first;
+        assertEquals(bTree._root, node10);
+        assertEquals(node10.entries.size(), 1);
+        assertEquals(node10.children.size(), 2);
+
+        Entry<Integer, Integer> remove10 = bTree.remove(10);
+        assertEquals(bTree.size(), 0);
+        assertTrue(bTree.isEmpty());
+        assertEquals(10, (int)remove10.getKey());
+        assertNull(bTree._root);
+    }
+
+    @Test
+    public void testRandomRemove() {
+        for (int i = 0; i < 10; i++) {
+            Random random = new Random();
+            BTree<Integer, Integer> bTree = new BTree<>(3 + random.nextInt(5));
+            for (int j = 0; j < 1000; j++) {
                 bTree.insert(random.nextInt(100), j);
             }
-            List<Integer> keys = new ArrayList<>();
-            bTree.traverseInOrder(new Consumer<Entry<Integer, Integer>>() {
-                @Override
-                public void accept(Entry<Integer, Integer> integerIntegerEntry) {
-                    keys.add(integerIntegerEntry.getKey());
+            int size = bTree.size();
+            for (int j = 0; j < 10000; j++) {
+                Entry<Integer, Integer> remove = bTree.remove(random.nextInt(100));
+                if (remove != null) {
+                    size -= 1;
+                    assertEquals(bTree.size(), size);
+                    assertEquals(size == 0, bTree.isEmpty());
+                    List<Integer> keys = new ArrayList<>();
+                    bTree.traverseInOrder(new Consumer<Entry<Integer, Integer>>() {
+                        @Override
+                        public void accept(Entry<Integer, Integer> integerIntegerEntry) {
+                            keys.add(integerIntegerEntry.getKey());
+                        }
+                    });
+                    assertEquals(keys.size(), size);
+                    assertSorted(keys);
                 }
-            });
-            assertSorted(keys);
+            }
         }
     }
 
     private <K extends Comparable<K>> void assertSorted(List<K> list) {
         for (int i = 1; i < list.size(); i++) {
-            assertTrue(list.get(i - 1).compareTo(list.get(i)) <= 0);
+            if (list.get(i - 1).compareTo(list.get(i)) > 0) {
+                System.out.println(list.get(i-1));
+                System.out.println(list.get(i));
+            }
+             assertTrue(list.get(i - 1).compareTo(list.get(i)) <= 0);
         }
     }
 }
