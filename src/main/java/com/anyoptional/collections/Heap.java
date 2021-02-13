@@ -21,7 +21,8 @@ import java.util.*;
  */
 public class Heap<E> {
 
-    private final List<E> _storage = new ArrayList<>();
+    @VisibleForTesting
+    final List<E> _storage = new ArrayList<>();
 
     @Nullable
     private final Comparator<? super E> _comparator;

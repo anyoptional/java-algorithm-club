@@ -5,6 +5,9 @@ import com.anyoptional.lang.Nullable;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+/**
+ * Copied from SpringFramework.
+ */
 public abstract class ObjectUtils {
 
     private static final int INITIAL_HASH = 7;

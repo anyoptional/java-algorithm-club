@@ -5,6 +5,9 @@ import com.anyoptional.util.ObjectUtils;
 
 import java.util.Objects;
 
+/**
+ * 二元组
+ */
 public class Tuple<A, B> {
 
     private static final Tuple<?, ?> EMPTY = new Tuple<>(null, null);

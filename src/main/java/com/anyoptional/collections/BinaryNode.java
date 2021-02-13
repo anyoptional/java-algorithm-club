@@ -216,13 +216,7 @@ class BinaryNode<K, V> {
     void updateHeightAbove() {
         BinaryNode<K, V> cur = this;
         while (cur != null) {
-            int oldHeight = cur.height;
             cur.updateHeight();
-            // 如果没变化
-            // 那么历代祖先的高度也不会变
-            if (cur.height == oldHeight) {
-                break;
-            }
             cur = cur.parent;
         }
     }

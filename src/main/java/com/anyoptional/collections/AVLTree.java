@@ -4,20 +4,25 @@ import com.anyoptional.lang.Nullable;
 
 import java.util.Comparator;
 
+/**
+ * 自平衡的二叉搜索树，左右子树的高度差不超过1。
+ *
+ * @apiNote AVLTree do not permit null key.
+ */
 public class AVLTree<K, V> extends BinarySearchTree<K, V> {
 
     public AVLTree() {
     }
 
     public AVLTree(Comparator<? super K> comparator) {
-       super(comparator);
+        super(comparator);
     }
 
     @Override
     public void insert(K key, @Nullable V value) {
         BinaryNode<K, V> node = doInsert(key, value);
         for (BinaryNode<K, V> g = node; g != null; g = g.parent) {
-            if (!((Node<K, V>)g).isAvlBalanced()) {
+            if (!((Node<K, V>) g).isAvlBalanced()) {
                 // 若果真在g节点处失衡
                 // g至少是被插入节点的祖父
                 rotateAt(g);
@@ -30,7 +35,7 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
     public Entry<K, V> remove(K key) {
         Tuple<Entry<K, V>, BinaryNode<K, V>> tuple = doRemove(key);
         for (BinaryNode<K, V> g = tuple.second; g != null; g = g.parent) {
-            if (!((Node<K, V>)g).isAvlBalanced()) {
+            if (!((Node<K, V>) g).isAvlBalanced()) {
                 // 若果真在g节点处失衡
                 // 被删除的节点肯定处于g相对较矮的子树
                 // 并且，如果g也属于其祖先中相对较矮的子树
@@ -47,45 +52,27 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
         // 若g失衡，p、v必然存在
         BinaryNode<K, V> p = g.highestChild();
         BinaryNode<K, V> v = p.highestChild();
-        // 根据p、v
+        // 根据p、v的相对位置进行处理
         if (p.isLeftChild() && v.isLeftChild()) {
             // zig
             g.zig();
-            g.updateHeight();
-            p.updateHeight();
-            if (p.parent != null) {
-                p.parent.updateHeightAbove();
-            }
+            g.updateHeightAbove();
         } else if (p.isLeftChild() && v.isRightChild()) {
             // zag-zig
             p.zag();
-            p.updateHeight();
-            v.updateHeight();
+            p.updateHeightAbove();
             g.zig();
-            g.updateHeight();
-            v.updateHeight();
-            if (v.parent != null) {
-                v.parent.updateHeightAbove();
-            }
+            g.updateHeightAbove();
         } else if (p.isRightChild() && v.isLeftChild()) {
             // zig-zag
             p.zig();
-            p.updateHeight();
-            v.updateHeight();
+            p.updateHeightAbove();
             g.zag();
-            g.updateHeight();
-            v.updateHeight();
-            if (v.parent != null) {
-                v.parent.updateHeightAbove();
-            }
+            g.updateHeightAbove();
         } else {
             // zag
             g.zag();
-            g.updateHeight();
-            p.updateHeight();
-            if (p.parent != null) {
-                p.parent.updateHeightAbove();
-            }
+            g.updateHeightAbove();
         }
         // 最后检查一下根节点是否需要变化
         if (p.parent == null) {

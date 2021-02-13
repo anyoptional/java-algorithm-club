@@ -5,6 +5,9 @@ import com.anyoptional.collections.Tuple;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Copied from Slf4J api.
+ */
 public final class MessageFormatter {
 
     public static Tuple<String, Object[]> format(String messagePattern, Object arg) {

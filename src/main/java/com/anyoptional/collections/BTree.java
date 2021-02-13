@@ -17,6 +17,7 @@ import java.util.function.Consumer;
  * 2. 至多有[m - 1]个Entry
  * 对于根节点，无论是多少阶的BTree，它都可以只有
  * 一个节点。
+ * @apiNote BTree do not permit null key.
  */
 public class BTree<K, V> {
 

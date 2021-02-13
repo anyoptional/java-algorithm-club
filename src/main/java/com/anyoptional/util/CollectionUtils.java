@@ -4,6 +4,9 @@ import com.anyoptional.lang.Nullable;
 
 import java.util.*;
 
+/**
+ * Copied from SpringFramework.
+ */
 public abstract class CollectionUtils {
 
     /**

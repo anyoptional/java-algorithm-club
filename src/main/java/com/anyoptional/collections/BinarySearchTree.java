@@ -11,6 +11,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * @apiNote BinarySearchTree do not permit null key.
+ */
 public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
 
     private int _size = 0;
@@ -179,15 +182,15 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
     }
 
     /**
-     * 插入一对键值对，返回可能失衡的节点
+     * 插入一对键值对，返回新插入的节点
      */
-    @Nullable
     protected BinaryNode<K, V> doInsert(K key, @Nullable V value) {
         Assert.notNull(key, "key is required");
         if (isEmpty()) {
-            _root = newBinaryNode(key, value, null);
+            BinaryNode<K, V> node = newBinaryNode(key, value, null);
+            _root = node;
             _size += 1;
-            return null;
+            return node;
         }
         BinaryNode<K, V> hot = findInsertionPoint(key);
         BinaryNode<K, V> node = newBinaryNode(key, value, hot);
@@ -198,7 +201,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
         }
         hot.updateHeightAbove();
         _size += 1;
-        return hot;
+        return node;
     }
 
     @SuppressWarnings("all")
