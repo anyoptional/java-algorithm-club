@@ -197,10 +197,13 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
         return node;
     }
 
+    /**
+     * 删除一个节点，返回被删除的词条、可能失衡的节点和被删除节点的接替者
+     */
     @SuppressWarnings("all")
-    protected Tuple<Entry<K, V>, BinaryNode<K, V>> doRemove(K key) {
+    protected Tuple3<Entry<K, V>, BinaryNode<K, V>, BinaryNode<K, V>> doRemove(K key) {
         BinaryNode<K, V> node = searchBinaryNode(key);
-        if (node == null) return Tuple.empty();
+        if (node == null) return Tuple3.empty();
         BinaryNode<K, V> replacement = null;
         if (node.hasBothChildren()) {
             BinaryNode<K, V> next = node.successor();
@@ -246,8 +249,8 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
         node.left = null;
         node.right = null;
         node.parent = null;
-        // 返回被删除的entry和可能失衡的节点
-        return new Tuple<>(node.entry, hot);
+        // 返回被删除的entry、可能失衡的节点和接替节点
+        return new Tuple3<>(node.entry, hot, replacement);
     }
 
     protected BinaryNode<K, V> newBinaryNode(K key, @Nullable V value, @Nullable BinaryNode<K, V> parent) {

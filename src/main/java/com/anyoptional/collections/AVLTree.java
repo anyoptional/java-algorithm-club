@@ -33,8 +33,8 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
 
     @Override
     public Entry<K, V> remove(K key) {
-        Tuple<Entry<K, V>, BinaryNode<K, V>> tuple = doRemove(key);
-        for (BinaryNode<K, V> g = tuple.second; g != null; g = g.parent) {
+        Tuple3<Entry<K, V>, BinaryNode<K, V>, BinaryNode<K, V>> tuple3 = doRemove(key);
+        for (BinaryNode<K, V> g = tuple3.second; g != null; g = g.parent) {
             if (!((Node<K, V>) g).isAvlBalanced()) {
                 // 若果真在g节点处失衡
                 // 被删除的节点肯定处于g相对较矮的子树
@@ -44,7 +44,7 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
                 rotateAt(g);
             }
         }
-        return tuple.first;
+        return tuple3.first;
     }
 
     @SuppressWarnings("all")

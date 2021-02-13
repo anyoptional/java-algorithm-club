@@ -46,7 +46,9 @@ public class RedBlackTree<K, V> extends BinarySearchTree<K, V> {
 
     @Override
     public Entry<K, V> remove(K key) {
-        return super.remove(key);
+        Tuple3<Entry<K, V>, BinaryNode<K, V>, BinaryNode<K, V>> tuple3 = doRemove(key);
+
+        return tuple3.first;
     }
 
     /**
