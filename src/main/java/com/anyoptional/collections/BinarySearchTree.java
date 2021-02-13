@@ -34,14 +34,6 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
         _comparator = comparator;
     }
 
-    @SuppressWarnings("all")
-    public int height() {
-        if (isEmpty()) {
-            return -1;
-        }
-        return _root.height;
-    }
-
     public int size() {
         return _size;
     }

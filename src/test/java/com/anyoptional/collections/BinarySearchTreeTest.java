@@ -24,7 +24,7 @@ public class BinarySearchTreeTest {
         assertEquals(tree.size(), 1);
         assertEquals(tree._root.minimum().entry.getValue(), "A");
         assertEquals(tree._root.maximum().entry.getValue(), "A");
-        assertEquals(tree.height(), 0);
+        assertEquals(tree._root.height, 0);
         assertTrue(tree.containsKey(8));
         assertEquals("A", tree.searchValue(8));
         assertNull(tree.searchValue(10));
@@ -45,7 +45,7 @@ public class BinarySearchTreeTest {
         assertEquals((int) tree._root.minimum().entry.getKey(), 3);
         assertEquals((int) tree._root.maximum().entry.getKey(), 16);
 
-        assertEquals(tree.height(), 3);
+        assertEquals(tree._root.height, 3);
 
         BinaryNode<Integer, Integer> node1 = tree.searchBinaryNode(16);
         assertNotNull(node1);
@@ -67,7 +67,7 @@ public class BinarySearchTreeTest {
 
         tree.insert(5, 5);
         assertEquals(tree.size(), 2);
-        assertEquals(tree.height(), 1);
+        assertEquals(tree._root.height, 1);
 
         BinaryNode<Integer, Integer> node1 = tree.searchBinaryNode(5);
         assertNotNull(node1);
@@ -75,7 +75,7 @@ public class BinarySearchTreeTest {
 
         tree.insert(10, 10);
         assertEquals(tree.size(), 3);
-        assertEquals(tree.height(), 1);
+        assertEquals(tree._root.height, 1);
 
         BinaryNode<Integer, Integer> node2 = tree.searchBinaryNode(10);
         assertNotNull(node2);
@@ -83,7 +83,7 @@ public class BinarySearchTreeTest {
 
         tree.insert(3, 3);
         assertEquals(tree.size(), 4);
-        assertEquals(tree.height(), 2);
+        assertEquals(tree._root.height, 2);
 
         BinaryNode<Integer, Integer> node3 = tree.searchBinaryNode(3);
         assertNotNull(node3);
@@ -137,7 +137,7 @@ public class BinarySearchTreeTest {
         assertEquals((int) tree._root.minimum().entry.getKey(), 3);
         assertEquals((int) tree._root.maximum().entry.getKey(), 16);
 
-        assertEquals(tree.height(), 7);
+        assertEquals(tree._root.height, 7);
 
         BinaryNode<Integer, Integer> node1 = tree.searchBinaryNode(16);
         assertNotNull(node1);

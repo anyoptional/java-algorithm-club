@@ -3,6 +3,8 @@ package com.anyoptional.collections;
 import com.anyoptional.lang.Nullable;
 import com.anyoptional.util.Assert;
 
+import java.util.Comparator;
+
 /**
  * 红黑树是由红、黑两类节点组成的BST。实现上统一增设外部节点，
  * 使之成为真二叉树（实际上这些外部节点可以是假想出来的，并不
@@ -29,6 +31,13 @@ import com.anyoptional.util.Assert;
  * @apiNote RedBlackTree do not permit null key.
  */
 public class RedBlackTree<K, V> extends BinarySearchTree<K, V> {
+
+    public RedBlackTree() {
+    }
+
+    public RedBlackTree(Comparator<? super K> comparator) {
+        super(comparator);
+    }
 
     @Override
     public void insert(K key, @Nullable V value) {

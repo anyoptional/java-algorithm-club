@@ -15,16 +15,15 @@ public class RedBlackTreeTest {
             RedBlackTree<Integer, Integer> rbTree = new RedBlackTree<>();
             for (int j = 0; j < 1000; j++) {
                 rbTree.insert(random.nextInt(500), null);
-                // 定义1
-                assertTrue(((RedBlackTree.Node) rbTree._root).isBlack());
-                // 定义4
-                assertBlackHeightEquals(rbTree);
+                assertValidRBTree(rbTree);
             }
         }
     }
 
-    private <K, V> void assertBlackHeightEquals(RedBlackTree<K, V> rbTree) {
+    private <K, V> void assertValidRBTree(RedBlackTree<K, V> rbTree) {
         if (rbTree.isEmpty()) return;
+        // 定义1
+        assertTrue(((RedBlackTree.Node) rbTree._root).isBlack());
         final Height height = new Height(0);
         rbTree._root.traverseLevel(new Consumer<BinaryNode<K, V>>() {
             @Override
@@ -52,6 +51,7 @@ public class RedBlackTreeTest {
                     if (height.height == 0) {
                         height.height = h;
                     } else {
+                        // 定义4
                         assertEquals(height.height, h);
                     }
                 }
