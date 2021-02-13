@@ -32,9 +32,7 @@ public class RedBlackTree<K, V> extends BinarySearchTree<K, V> {
 
     @Override
     public void insert(K key, @Nullable V value) {
-        Node<K, V> node = (Node<K, V>) doInsert(key, value);
-        if (node.isBlack()) return;
-        solveDoubleRed(node);
+        solveDoubleRed((Node<K, V>) doInsert(key, value));
     }
 
     @Override
@@ -46,7 +44,70 @@ public class RedBlackTree<K, V> extends BinarySearchTree<K, V> {
      * 双红修正
      */
     private void solveDoubleRed(Node<K, V> v) {
-        
+        if (v.parent == null) return;
+        if (((Node<K, V>) v.parent).isBlack()) return;
+        // 若果真发生双红缺陷
+        // p一定存在且为红色
+        // 由定义1，g一定存在，因为红节点不能作为根节点
+        // 由定义3，g一定为黑色
+        // 并且g、p、v下属的四颗子树黑深度一定相等
+        Node<K, V> p = (Node<K, V>) v.parent;
+        Assert.isTrue(p != null && p.isRed(), "p must be red");
+        Node<K, V> g = (Node<K, V>) v.grandParent();
+        Assert.isTrue(g != null && g.isBlack(), "g must be black");
+        Node<K, V> u = (Node<K, V>) v.uncle();
+        // u如果是外部节点也视为黑节点
+        if (u == null || u.isBlack()) {
+            // 出现BRR或RRB两种非法情况
+            // 根据p、v的相对位置进行处理
+            if (p.isLeftChild() && v.isLeftChild()) {
+                // zig
+                g.zig();
+                p.color = Node.Color.BLACK;
+            } else if (p.isLeftChild() && v.isRightChild()) {
+                // zag-zig
+                p.zag();
+                g.zig();
+                v.color = Node.Color.BLACK;
+            } else if (p.isRightChild() && v.isLeftChild()) {
+                // zig-zag
+                p.zig();
+                g.zag();
+                v.color = Node.Color.BLACK;
+            } else {
+                // zag
+                g.zag();
+                p.color = Node.Color.BLACK;
+            }
+            // g必由黑转红
+            g.color = Node.Color.RED;
+            g.updateHeightAbove();
+            // 最后检查一下根节点是否需要变化
+            if (p.parent == null) {
+                // zig/zag变换会提升p
+                _root = p;
+            } else if (v.parent == null) {
+                // zig-zag/zag-zig变换会提升v
+                _root = v;
+            }
+        } else {
+            // p、v、u均为红节点，提升变换以后
+            // 的超级节点就包含有g、p、v、u
+            // 四个关键码，站在BTree的角度
+            // 就是发生了上溢
+            // 此时只需要将g提升一级，p、u转为黑色
+            // g如果是根节点就不需要重染色，此时整树
+            // 黑高度提升一级，否则g转红
+            if (!g.isRoot()) {
+                g.color = Node.Color.RED;
+            }
+            p.color = Node.Color.BLACK;
+            u.color = Node.Color.BLACK;
+            u.updateHeight();
+            p.updateHeight();
+            g.updateHeightAbove();
+            solveDoubleRed(g);
+        }
     }
 
     /**
@@ -96,11 +157,18 @@ public class RedBlackTree<K, V> extends BinarySearchTree<K, V> {
         @Override
         void updateHeight() {
             // 外部节点为黑色
-            int lh = (left == null || ((Node<K, V>) left).isBlack()) ? 1 : 0;
-            int rh = (right == null || ((Node<K, V>) right).isBlack()) ? 1 : 0;
+            int lh = left != null ? left.height : 1;
+            int rh = right != null ? right.height : 1;
+            Assert.isTrue(lh == rh, "subtrees height do not equal");
             // height为黑深度
-            height = Math.max(lh, rh) + (isBlack() ? 1 : 0);
+            height = lh + (isBlack() ? 1 : 0);
         }
+
+        @Override
+        protected String description() {
+            return super.description() + (isBlack() ? "<B>" : "<R>");
+        }
+
     }
 
 }

@@ -186,20 +186,21 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      */
     protected BinaryNode<K, V> doInsert(K key, @Nullable V value) {
         Assert.notNull(key, "key is required");
+        BinaryNode<K, V> node;
         if (isEmpty()) {
-            BinaryNode<K, V> node = newBinaryNode(key, value, null);
+            node = newBinaryNode(key, value, null);
             _root = node;
-            _size += 1;
-            return node;
-        }
-        BinaryNode<K, V> hot = findInsertionPoint(key);
-        BinaryNode<K, V> node = newBinaryNode(key, value, hot);
-        if (Comparators.compare(key, hot.entry.getKey(), _comparator) >= 0) {
-            hot.right = node;
         } else {
-            hot.left = node;
+            BinaryNode<K, V> hot = findInsertionPoint(key);
+            node = newBinaryNode(key, value, hot);
+            if (Comparators.compare(key, hot.entry.getKey(), _comparator) >= 0) {
+                hot.right = node;
+            } else {
+                hot.left = node;
+            }
         }
-        hot.updateHeightAbove();
+        // 红黑树的高度需要从node开始更新
+        node.updateHeightAbove(); // before -> hot.updateHeightAbove()
         _size += 1;
         return node;
     }
