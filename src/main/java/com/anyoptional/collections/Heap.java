@@ -125,7 +125,7 @@ public class Heap<E> {
         // 从最后一个内部节点开始，局部下滤调整
         // 每一次下滤调整都会获得一个局部有效的
         // 堆，直至下滤到根节点，整堆也必然有序
-        for (int i = lastInternalIndex(); i >= 0; i--) {
+        for (int i = parentIndexOf(size() - 1); i >= 0; i--) {
             shiftDown(i, _storage.size());
         }
     }
@@ -183,13 +183,6 @@ public class Heap<E> {
         _storage.set(greatestIndex, oldParent);
         // 继续往下看看是否需要交换
         shiftDown(greatestIndex, endIndex);
-    }
-
-    /**
-     * 最后一个内部节点
-     */
-    private int lastInternalIndex() {
-        return size() / 2 - 1;
     }
 
     /**
