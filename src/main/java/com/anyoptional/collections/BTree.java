@@ -22,74 +22,6 @@ public class BTree<K, V> {
 
     private static final int MIN_ORDER = 3;
 
-    /**
-     * BTree节点，满足entries.size() + 1 = children.size()
-     */
-    static class Node<K, V> {
-
-        @Nullable
-        Node<K, V> parent;
-
-        final List<Entry<K, V>> entries = new ArrayList<>();
-
-        final List<Node<K, V>> children = new ArrayList<>();
-
-        /**
-         * 创建一个不含任何词条的节点
-         */
-        Node() {
-        }
-
-        /**
-         * 创建根节点（初始情况）
-         */
-        Node(K key, @Nullable V value) {
-            entries.add(new Entry<>(key, value));
-            children.add(null);
-            children.add(null);
-        }
-
-        /**
-         * 创建根节点（上溢情况）
-         */
-        Node(Entry<K, V> entry, Node<K, V> lhs, Node<K, V> rhs) {
-            entries.add(entry);
-            lhs.parent = this;
-            children.add(lhs);
-            rhs.parent = this;
-            children.add(rhs);
-        }
-
-        /**
-         * 是否是叶节点
-         */
-        public boolean isLeaf() {
-            Assert.notEmpty(children, "invalid node");
-            return children.get(0) == null;
-        }
-
-        /**
-         * 中序遍历
-         */
-        public void traverseInOrder(Consumer<Entry<K, V>> consumer) {
-            Assert.notNull(consumer, "consumer is required");
-            for (int i = 0; i < entries.size(); i++) {
-                Node<K, V> child = children.get(i);
-                if (child != null) {
-                    child.traverseInOrder(consumer);
-                }
-                consumer.accept(entries.get(i));
-            }
-            if (!children.isEmpty()) {
-                Node<K, V> child = children.get(children.size() - 1);
-                if (child != null) {
-                    child.traverseInOrder(consumer);
-                }
-            }
-        }
-
-    }
-
     private int _size;
 
     @Nullable
@@ -358,6 +290,74 @@ public class BTree<K, V> {
             // node父节点移出元素后，也可能发生下溢
             solveUnderflow(leftSibling != null ? leftSibling.parent : rightSibling.parent);
         }
+    }
+
+    /**
+     * BTree节点，满足entries.size() + 1 = children.size()
+     */
+    static class Node<K, V> {
+
+        @Nullable
+        Node<K, V> parent;
+
+        final List<Entry<K, V>> entries = new ArrayList<>();
+
+        final List<Node<K, V>> children = new ArrayList<>();
+
+        /**
+         * 创建一个不含任何词条的节点
+         */
+        Node() {
+        }
+
+        /**
+         * 创建根节点（初始情况）
+         */
+        Node(K key, @Nullable V value) {
+            entries.add(new Entry<>(key, value));
+            children.add(null);
+            children.add(null);
+        }
+
+        /**
+         * 创建根节点（上溢情况）
+         */
+        Node(Entry<K, V> entry, Node<K, V> lhs, Node<K, V> rhs) {
+            entries.add(entry);
+            lhs.parent = this;
+            children.add(lhs);
+            rhs.parent = this;
+            children.add(rhs);
+        }
+
+        /**
+         * 是否是叶节点
+         */
+        public boolean isLeaf() {
+            Assert.notEmpty(children, "invalid node");
+            return children.get(0) == null;
+        }
+
+        /**
+         * 中序遍历
+         */
+        public void traverseInOrder(Consumer<Entry<K, V>> consumer) {
+            Assert.notNull(consumer, "consumer is required");
+            for (int i = 0; i < entries.size(); i++) {
+                Node<K, V> child = children.get(i);
+                if (child != null) {
+                    child.traverseInOrder(consumer);
+                }
+                consumer.accept(entries.get(i));
+            }
+            if (!children.isEmpty()) {
+                Node<K, V> child = children.get(children.size() - 1);
+                if (child != null) {
+                    child.traverseInOrder(consumer);
+                }
+            }
+        }
+
     }
 
 }

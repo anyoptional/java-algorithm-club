@@ -17,7 +17,7 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
     public void insert(K key, @Nullable V value) {
         BinaryNode<K, V> node = doInsert(key, value);
         for (BinaryNode<K, V> g = node; g != null; g = g.parent) {
-            if (!g.isAvlBalanced()) {
+            if (!((Node<K, V>)g).isAvlBalanced()) {
                 // 若果真在g节点处失衡
                 // g至少是被插入节点的祖父
                 rotateAt(g);
@@ -30,7 +30,7 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
     public Entry<K, V> remove(K key) {
         Tuple<Entry<K, V>, BinaryNode<K, V>> tuple = doRemove(key);
         for (BinaryNode<K, V> g = tuple.second; g != null; g = g.parent) {
-            if (!g.isAvlBalanced()) {
+            if (!((Node<K, V>)g).isAvlBalanced()) {
                 // 若果真在g节点处失衡
                 // 被删除的节点肯定处于g相对较矮的子树
                 // 并且，如果g也属于其祖先中相对较矮的子树
@@ -95,6 +95,28 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
             // zig-zag/zag-zig变换会提升v
             _root = v;
         }
+    }
+
+    @Override
+    protected BinaryNode<K, V> newBinaryNode(K key, @Nullable V value, @Nullable BinaryNode<K, V> parent) {
+        return new Node<>(key, value, parent);
+    }
+
+    static class Node<K, V> extends BinaryNode<K, V> {
+
+        Node(K key, @Nullable V value, @Nullable BinaryNode<K, V> parent) {
+            super(key, value, parent);
+        }
+
+        /**
+         * AVL平衡当且仅当左、右子树高度差不超过1
+         */
+        boolean isAvlBalanced() {
+            int lh = left != null ? left.height : -1;
+            int rh = right != null ? right.height : -1;
+            return Math.abs(lh - rh) <= 1;
+        }
+
     }
 
 }

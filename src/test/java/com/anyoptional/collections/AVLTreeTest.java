@@ -75,7 +75,7 @@ public class AVLTreeTest {
         while (!queue.isEmpty()) {
             cur = queue.dequeue();
             assertHeightEquals(cur);
-            if (!cur.isAvlBalanced()) {
+            if (!((AVLTree.Node<K, V>)cur).isAvlBalanced()) {
                 return false;
             }
             if (cur.hasLeftChild()) {
@@ -89,10 +89,10 @@ public class AVLTreeTest {
     }
 
     private <K, V> void assertHeightEquals(BinaryNode<K, V> node) {
-        int lh = node.left != null ? node.left.height() : -1;
-        int rh = node.right != null ? node.right.height() : -1;
+        int lh = node.left != null ? node.left.height : -1;
+        int rh = node.right != null ? node.right.height : -1;
         int height = Math.max(lh, rh) + 1;
-        assertEquals(height, node.height());
+        assertEquals(height, node.height);
     }
 
 }

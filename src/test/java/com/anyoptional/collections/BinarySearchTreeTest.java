@@ -49,15 +49,15 @@ public class BinarySearchTreeTest {
 
         BinaryNode<Integer, Integer> node1 = tree.searchBinaryNode(16);
         assertNotNull(node1);
-        assertEquals(node1.height(), 0);
+        assertEquals(node1.height, 0);
 
         BinaryNode<Integer, Integer> node2 = tree.searchBinaryNode(12);
         assertNotNull(node2);
-        assertEquals(node2.height(), 1);
+        assertEquals(node2.height, 1);
 
         BinaryNode<Integer, Integer> node3 = tree.searchBinaryNode(10);
         assertNotNull(node3);
-        assertEquals(node3.height(), 2);
+        assertEquals(node3.height, 2);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class BinarySearchTreeTest {
 
         BinaryNode<Integer, Integer> node1 = tree.searchBinaryNode(5);
         assertNotNull(node1);
-        assertEquals(node1.height(), 0);
+        assertEquals(node1.height, 0);
 
         tree.insert(10, 10);
         assertEquals(tree.size(), 3);
@@ -79,7 +79,7 @@ public class BinarySearchTreeTest {
 
         BinaryNode<Integer, Integer> node2 = tree.searchBinaryNode(10);
         assertNotNull(node2);
-        assertEquals(node2.height(), 0);
+        assertEquals(node2.height, 0);
 
         tree.insert(3, 3);
         assertEquals(tree.size(), 4);
@@ -87,8 +87,8 @@ public class BinarySearchTreeTest {
 
         BinaryNode<Integer, Integer> node3 = tree.searchBinaryNode(3);
         assertNotNull(node3);
-        assertEquals(node3.height(), 0);
-        assertEquals(node1.height(), 1);
+        assertEquals(node3.height, 0);
+        assertEquals(node1.height, 1);
 
         assertEquals((int) tree._root.minimum().entry.getValue(), 3);
         assertEquals((int) tree._root.maximum().entry.getValue(), 10);
@@ -141,7 +141,7 @@ public class BinarySearchTreeTest {
 
         BinaryNode<Integer, Integer> node1 = tree.searchBinaryNode(16);
         assertNotNull(node1);
-        assertEquals(node1.height(), 0);
+        assertEquals(node1.height, 0);
     }
 
     @Test

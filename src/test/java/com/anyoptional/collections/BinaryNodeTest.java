@@ -13,14 +13,14 @@ import static org.junit.Assert.*;
 public class BinaryNodeTest {
 
     // 按层次组成树状结构
-    BinaryNode<Integer, String> a = new BinaryNode<>(0);
-    BinaryNode<Integer, String> b = new BinaryNode<>(1);
-    BinaryNode<Integer, String> c = new BinaryNode<>(2);
-    BinaryNode<Integer, String> d = new BinaryNode<>(3);
-    BinaryNode<Integer, String> e = new BinaryNode<>(4);
-    BinaryNode<Integer, String> f = new BinaryNode<>(5);
-    BinaryNode<Integer, String> g = new BinaryNode<>(6);
-    BinaryNode<Integer, String> h = new BinaryNode<>(7);
+    BinaryNode<Integer, String> a = new BinaryNode<>(0, null);
+    BinaryNode<Integer, String> b = new BinaryNode<>(1, null);
+    BinaryNode<Integer, String> c = new BinaryNode<>(2, null);
+    BinaryNode<Integer, String> d = new BinaryNode<>(3, null);
+    BinaryNode<Integer, String> e = new BinaryNode<>(4, null);
+    BinaryNode<Integer, String> f = new BinaryNode<>(5, null);
+    BinaryNode<Integer, String> g = new BinaryNode<>(6, null);
+    BinaryNode<Integer, String> h = new BinaryNode<>(7, null);
 
     @Before
     public void setup() {
@@ -57,12 +57,12 @@ public class BinaryNodeTest {
 
     @Test
     public void testSuccessorPredecessor() {
-        BinaryNode<Integer, String> t0 = new BinaryNode<>(0);
+        BinaryNode<Integer, String> t0 = new BinaryNode<>(0, null);
         assertNull(t0.successor());
         assertNull(t0.predecessor());
 
-        BinaryNode<Integer, String> t1 = new BinaryNode<>(0);
-        BinaryNode<Integer, String> t2 = new BinaryNode<>(1);
+        BinaryNode<Integer, String> t1 = new BinaryNode<>(0, null);
+        BinaryNode<Integer, String> t2 = new BinaryNode<>(1, null);
         t1.left = t2;
         t2.parent = t1;
         assertEquals(t2, t1.predecessor());
@@ -98,7 +98,7 @@ public class BinaryNodeTest {
 
     @Test
     public void testSize() {
-        BinaryNode<Integer, String> tree = new BinaryNode<>(0);
+        BinaryNode<Integer, String> tree = new BinaryNode<>(0, null);
         assertEquals(1, tree.size());
         assertTrue(tree.isRoot());
         assertTrue(tree.isLeaf());
@@ -151,7 +151,7 @@ public class BinaryNodeTest {
         assertNull(a.uncle());
         assertNull(a.grandParent());
         assertNull(a.sibling());
-        assertEquals(3, a.height());
+        assertEquals(3, a.height);
 
         assertTrue(b.isLeftChild());
         assertFalse(b.isRightChild());
@@ -160,7 +160,7 @@ public class BinaryNodeTest {
         assertEquals(c, b.sibling());
         assertNull(b.grandParent());
         assertFalse(b.isLeaf());
-        assertEquals(2, b.height());
+        assertEquals(2, b.height);
 
 
         assertTrue(c.isRightChild());
@@ -170,7 +170,7 @@ public class BinaryNodeTest {
         assertEquals(b, c.sibling());
         assertNull(c.grandParent());
         assertFalse(c.isLeaf());
-        assertEquals(1, c.height());
+        assertEquals(1, c.height);
 
         assertFalse(d.hasBothChildren());
         assertTrue(d.hasLeftChild());
@@ -182,7 +182,7 @@ public class BinaryNodeTest {
         assertEquals(e, d.sibling());
         assertEquals(a, d.grandParent());
         assertFalse(d.isLeaf());
-        assertEquals(1, d.height());
+        assertEquals(1, d.height);
 
         assertFalse(e.hasBothChildren());
         assertFalse(e.hasLeftChild());
@@ -194,7 +194,7 @@ public class BinaryNodeTest {
         assertEquals(d, e.sibling());
         assertEquals(a, d.grandParent());
         assertTrue(e.isLeaf());
-        assertEquals(0, e.height());
+        assertEquals(0, e.height);
 
         assertFalse(h.hasBothChildren());
         assertFalse(h.hasLeftChild());
@@ -206,7 +206,7 @@ public class BinaryNodeTest {
         assertNull(h.sibling());
         assertEquals(b, h.grandParent());
         assertTrue(h.isLeaf());
-        assertEquals(0, h.height());
+        assertEquals(0, h.height);
 
         assertFalse(f.hasBothChildren());
         assertFalse(f.hasLeftChild());
@@ -219,7 +219,7 @@ public class BinaryNodeTest {
         assertEquals(b, f.uncle());
         assertEquals(g, f.sibling());
         assertEquals(a, f.grandParent());
-        assertEquals(0, f.height());
+        assertEquals(0, f.height);
 
         assertFalse(g.hasBothChildren());
         assertFalse(g.hasLeftChild());
@@ -232,7 +232,7 @@ public class BinaryNodeTest {
         assertEquals(b, g.uncle());
         assertEquals(f, g.sibling());
         assertEquals(a, g.grandParent());
-        assertEquals(0, g.height());
+        assertEquals(0, g.height);
     }
 
     @Test

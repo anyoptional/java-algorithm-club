@@ -1,9 +1,13 @@
 package com.anyoptional.collections;
 
 import com.anyoptional.lang.Nullable;
+import com.anyoptional.lang.VisibleForTesting;
 import com.anyoptional.util.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -11,6 +15,7 @@ import java.util.function.Consumer;
  *
  * @apiNote BinaryNode do not permit null key.
  */
+@VisibleForTesting
 class BinaryNode<K, V> {
 
     final Entry<K, V> entry;
@@ -26,15 +31,9 @@ class BinaryNode<K, V> {
 
     /**
      * 树高，约定叶子节点为0，空树为-1
+     * @see #updateHeight(), {@link #updateHeightAbove()}
      */
-    private int height = 0;
-
-    /**
-     * 初始化根节点
-     */
-    BinaryNode(K key) {
-        this(key, null);
-    }
+    int height = 0;
 
     /**
      * 初始化根节点
@@ -47,19 +46,8 @@ class BinaryNode<K, V> {
      * 初始化一个叶节点，并指定其父节点
      */
     BinaryNode(K key, @Nullable V value, @Nullable BinaryNode<K, V> parent) {
-        this(new Entry<>(key, value), parent);
-    }
-
-    /**
-     * 初始化一个叶节点，并指定其父节点
-     */
-    BinaryNode(Entry<K, V> entry, @Nullable BinaryNode<K, V> parent) {
-        this.entry = entry;
         this.parent = parent;
-    }
-
-    int height() {
-        return height;
+        this.entry = new Entry<>(key, value);
     }
 
     /**
@@ -103,15 +91,6 @@ class BinaryNode<K, V> {
 
     boolean hasBothChildren() {
         return hasLeftChild() && hasRightChild();
-    }
-
-    /**
-     * AVL平衡当且仅当左、右子树高度差不超过1
-     */
-    boolean isAvlBalanced() {
-        int lh = left != null ? left.height : -1;
-        int rh = right != null ? right.height : -1;
-        return Math.abs(lh - rh) <= 1;
     }
 
     /**
@@ -253,8 +232,8 @@ class BinaryNode<K, V> {
      */
     @Nullable
     BinaryNode<K, V> highestChild() {
-        int lh = left != null ? left.height() : -1;
-        int rh = right != null ? right.height() : -1;
+        int lh = left != null ? left.height : -1;
+        int rh = right != null ? right.height : -1;
         // 左子树高选左孩子
         if (lh > rh) {
             return left;

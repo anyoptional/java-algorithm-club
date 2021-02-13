@@ -36,7 +36,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
         if (isEmpty()) {
             return -1;
         }
-        return _root.height();
+        return _root.height;
     }
 
     public int size() {
@@ -185,12 +185,12 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
     protected BinaryNode<K, V> doInsert(K key, @Nullable V value) {
         Assert.notNull(key, "key is required");
         if (isEmpty()) {
-            _root = new BinaryNode<>(key, value);
+            _root = newBinaryNode(key, value, null);
             _size += 1;
             return null;
         }
         BinaryNode<K, V> hot = findInsertionPoint(key);
-        BinaryNode<K, V> node = new BinaryNode<>(key, value, hot);
+        BinaryNode<K, V> node = newBinaryNode(key, value, hot);
         if (Comparators.compare(key, hot.entry.getKey(), _comparator) >= 0) {
             hot.right = node;
         } else {
@@ -252,6 +252,10 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
         node.parent = null;
         // 返回被删除的entry和可能失衡的节点
         return new Tuple<>(node.entry, hot);
+    }
+
+    protected BinaryNode<K, V> newBinaryNode(K key, @Nullable V value, @Nullable BinaryNode<K, V> parent) {
+        return new BinaryNode<>(key, value, parent);
     }
 
     private class Iter implements Iterator<Entry<K, V>> {
