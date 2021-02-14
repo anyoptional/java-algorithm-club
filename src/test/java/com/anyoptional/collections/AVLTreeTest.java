@@ -1,10 +1,10 @@
 package com.anyoptional.collections;
 
+import com.anyoptional.lang.Nullable;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
 
@@ -26,7 +26,7 @@ public class AVLTreeTest {
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
             AVLTree<Integer, Integer> avlTree = new AVLTree<>();
-            for (int j = 0; j < 300; j++) {
+            for (int j = 0; j < 1000; j++) {
                 avlTree.insert(random.nextInt(250), j);
                 assertFalse(avlTree.isEmpty());
                 assertEquals(j + 1, avlTree.size());
@@ -56,12 +56,12 @@ public class AVLTreeTest {
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
             AVLTree<Integer, Integer> avlTree = new AVLTree<>();
-            for (int j = 0; j < 300; j++) {
-                avlTree.insert(random.nextInt(250), j);
+            for (int j = 0; j < 1000; j++) {
+                avlTree.insert(random.nextInt(500), j);
                 assertTrue(verifyBalanced(avlTree));
             }
-            for (int j = 0; j < 600; j++) {
-                avlTree.remove(random.nextInt(250));
+            for (int j = 0; j < 5000; j++) {
+                avlTree.remove(random.nextInt(500));
                 assertTrue(verifyBalanced(avlTree));
             }
         }
@@ -75,7 +75,7 @@ public class AVLTreeTest {
         while (!queue.isEmpty()) {
             cur = queue.dequeue();
             assertHeightEquals(cur);
-            if (!((AVLTree.Node<K, V>)cur).isAvlBalanced()) {
+            if (!((AVLTree.Node<K, V>)cur).isBalanced()) {
                 return false;
             }
             if (cur.hasLeftChild()) {
@@ -89,10 +89,15 @@ public class AVLTreeTest {
     }
 
     private <K, V> void assertHeightEquals(BinaryNode<K, V> node) {
-        int lh = node.left != null ? node.left.height : -1;
-        int rh = node.right != null ? node.right.height : -1;
-        int height = Math.max(lh, rh) + 1;
-        assertEquals(height, node.height);
+        assertEquals(getHeight(node), node.height);
+    }
+
+    private <K, V> int getHeight(@Nullable BinaryNode<K, V> node) {
+        if (node == null) return -1;
+        if (node.isLeaf()) return 0;
+        int lh = getHeight(node.left);
+        int rh = getHeight(node.right);
+        return Math.max(lh, rh) + 1;
     }
 
 }

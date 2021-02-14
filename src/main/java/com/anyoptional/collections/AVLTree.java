@@ -22,7 +22,7 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
     public void insert(K key, @Nullable V value) {
         BinaryNode<K, V> node = doInsert(key, value);
         for (BinaryNode<K, V> g = node; g != null; g = g.parent) {
-            if (!((Node<K, V>) g).isAvlBalanced()) {
+            if (!((Node<K, V>) g).isBalanced()) {
                 // 若果真在g节点处失衡
                 // g至少是被插入节点的祖父
                 rotateAt(g);
@@ -33,9 +33,9 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
 
     @Override
     public Entry<K, V> remove(K key) {
-        Tuple3<Entry<K, V>, BinaryNode<K, V>, BinaryNode<K, V>> tuple3 = doRemove(key);
+        Tuple3<Entry<K, V>, BinaryNode<K, V>, BinaryNode<K, V>> tuple3 = doRemove(key, true);
         for (BinaryNode<K, V> g = tuple3.second; g != null; g = g.parent) {
-            if (!((Node<K, V>) g).isAvlBalanced()) {
+            if (!((Node<K, V>) g).isBalanced()) {
                 // 若果真在g节点处失衡
                 // 被删除的节点肯定处于g相对较矮的子树
                 // 并且，如果g也属于其祖先中相对较矮的子树
@@ -52,36 +52,9 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
         // 若g失衡，p、v必然存在
         BinaryNode<K, V> p = g.highestChild();
         BinaryNode<K, V> v = p.highestChild();
-        // 根据p、v的相对位置进行处理
-        if (p.isLeftChild() && v.isLeftChild()) {
-            // zig
-            g.zig();
-            g.updateHeightAbove();
-        } else if (p.isLeftChild() && v.isRightChild()) {
-            // zag-zig
-            p.zag();
-            p.updateHeightAbove();
-            g.zig();
-            g.updateHeightAbove();
-        } else if (p.isRightChild() && v.isLeftChild()) {
-            // zig-zag
-            p.zig();
-            p.updateHeightAbove();
-            g.zag();
-            g.updateHeightAbove();
-        } else {
-            // zag
-            g.zag();
-            g.updateHeightAbove();
-        }
-        // 最后检查一下根节点是否需要变化
-        if (p.parent == null) {
-            // zig/zag变换会提升p
-            _root = p;
-        } else if (v.parent == null) {
-            // zig-zag/zag-zig变换会提升v
-            _root = v;
-        }
+        rotateAt(g, p, v);
+        p.updateHeight();
+        g.updateHeightAbove();
     }
 
     @Override
@@ -98,7 +71,8 @@ public class AVLTree<K, V> extends BinarySearchTree<K, V> {
         /**
          * AVL平衡当且仅当左、右子树高度差不超过1
          */
-        boolean isAvlBalanced() {
+        @SuppressWarnings("all")
+        boolean isBalanced() {
             int lh = left != null ? left.height : -1;
             int rh = right != null ? right.height : -1;
             return Math.abs(lh - rh) <= 1;

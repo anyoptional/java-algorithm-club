@@ -93,7 +93,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      */
     @Nullable
     public Entry<K, V> remove(K key) {
-        return doRemove(key).first;
+        return doRemove(key, true).first;
     }
 
     /**
@@ -201,7 +201,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      * 删除一个节点，返回被删除的词条、可能失衡的节点和被删除节点的接替者
      */
     @SuppressWarnings("all")
-    protected Tuple3<Entry<K, V>, BinaryNode<K, V>, BinaryNode<K, V>> doRemove(K key) {
+    protected Tuple3<Entry<K, V>, BinaryNode<K, V>, BinaryNode<K, V>> doRemove(K key, boolean automaticallyUpdate) {
         BinaryNode<K, V> node = searchBinaryNode(key);
         if (node == null) return Tuple3.empty();
         BinaryNode<K, V> replacement = null;
@@ -241,7 +241,10 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
             } else {
                 node.parent.right = replacement;
             }
-            node.parent.updateHeightAbove();
+            // 红黑树并不能立即更新高度
+            if (automaticallyUpdate) {
+                node.parent.updateHeightAbove();
+            }
         }
         // 规模递减
         _size -= 1;
@@ -255,6 +258,42 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
 
     protected BinaryNode<K, V> newBinaryNode(K key, @Nullable V value, @Nullable BinaryNode<K, V> parent) {
         return new BinaryNode<>(key, value, parent);
+    }
+
+    /**
+     * 视g、p、v的相对位置做一次等价的旋转变换
+     * @param g 祖父节点
+     * @param p 父节点
+     * @param v 当前节点
+     * @return 变换后的子树的新顶点
+     */
+    protected BinaryNode<K, V> rotateAt(BinaryNode<K, V> g, BinaryNode<K, V> p, BinaryNode<K, V> v) {
+        BinaryNode<K, V> vertex;
+        // 根据p、v的相对位置进行处理
+        if (p.isLeftChild() && v.isLeftChild()) {
+            // zig
+            g.zig();
+            vertex = p;
+        } else if (p.isLeftChild() && v.isRightChild()) {
+            // zag-zig
+            p.zag();
+            g.zig();
+            vertex = v;
+        } else if (p.isRightChild() && v.isLeftChild()) {
+            // zig-zag
+            p.zig();
+            g.zag();
+            vertex = v;
+        } else {
+            // zag
+            g.zag();
+            vertex = p;
+        }
+        // 最后检查一下根节点是否需要变化
+        if (vertex.parent == null) {
+            _root = vertex;
+        }
+        return vertex;
     }
 
     private class Iter implements Iterator<Entry<K, V>> {

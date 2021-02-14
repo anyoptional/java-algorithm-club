@@ -334,6 +334,7 @@ public class BTree<K, V> {
         /**
          * 是否是叶节点
          */
+        @SuppressWarnings("all")
         public boolean isLeaf() {
             Assert.notEmpty(children, "invalid node");
             return children.get(0) == null;
