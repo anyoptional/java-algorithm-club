@@ -12,9 +12,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
+ * 二叉搜索树
+ *
  * @apiNote BinarySearchTree do not permit null key.
  */
-public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
+public class BinarySearchTree<K, V> implements BinaryTree<K, V> {
 
     private int _size = 0;
 
@@ -34,10 +36,12 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
         _comparator = comparator;
     }
 
+    @Override
     public int size() {
         return _size;
     }
 
+    @Override
     public boolean isEmpty() {
         return _root == null;
     }
@@ -45,6 +49,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
     /**
      * 查询树中是否包含指定key
      */
+    @Override
     public boolean containsKey(K key) {
         return search(key) != null;
     }
@@ -62,6 +67,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      * 查询树中最高的、指定key对应的Entry
      */
     @Nullable
+    @Override
     public Entry<K, V> search(K key) {
         BinaryNode<K, V> binNode = searchBinaryNode(key);
         return binNode != null ? binNode.entry : null;
@@ -70,6 +76,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
     /**
      * 向树中插入一对键值对
      */
+    @Override
     public void insert(K key, @Nullable V value) {
         doInsert(key, value);
     }
@@ -92,6 +99,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      * 删除树中`最高`的、拥有指定key的节点
      */
     @Nullable
+    @Override
     public Entry<K, V> remove(K key) {
         return doRemove(key, true).first;
     }
@@ -100,6 +108,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      * 先序遍历
      */
     @SuppressWarnings("all")
+    @Override
     public void traversePreOrder(Consumer<Entry<K, V>> consumer) {
         if (isEmpty()) return;
         _root.traversePreOrder($0 -> consumer.accept($0.entry));
@@ -109,6 +118,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      * 中序遍历
      */
     @SuppressWarnings("all")
+    @Override
     public void traverseInOrder(Consumer<Entry<K, V>> consumer) {
         if (isEmpty()) return;
         _root.traverseInOrder($0 -> consumer.accept($0.entry));
@@ -118,6 +128,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      * 后序遍历
      */
     @SuppressWarnings("all")
+    @Override
     public void traversePostOrder(Consumer<Entry<K, V>> consumer) {
         if (isEmpty()) return;
         _root.traversePostOrder($0 -> consumer.accept($0.entry));
@@ -127,6 +138,7 @@ public class BinarySearchTree<K, V> implements Iterable<Entry<K, V>> {
      * 层次遍历
      */
     @SuppressWarnings("all")
+    @Override
     public void traverseLevel(Consumer<Entry<K, V>> consumer) {
         if (isEmpty()) return;
         _root.traverseLevel($0 -> consumer.accept($0.entry));

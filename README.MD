@@ -13,3 +13,4 @@
 - [Binary Search Tree (BST)](src/main/resources/BinarySearchTree.md). A binary tree that orders its nodes in a way that allows for fast queries.
 - [AVLTree](src/main/resources/AVLTree.md). An AVL tree is a self-balancing form of a [binary search tree](src/main/resources/BinarySearchTree.md), in which the height of subtrees differ at most by only 1.
 - [B-Tree](src/main/resources/BTree.md). A self-balancing search tree, in which nodes can have more than two children.
+- [Red-Black Tree](src/main/resources/RedBlackTree.md). A self balancing binary search tree.
