@@ -214,13 +214,12 @@ public class Heap<E> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Heap<?> heap = (Heap<?>) o;
-        return _storage.equals(heap._storage) &&
-                Objects.equals(_comparator, heap._comparator);
+        return _storage.equals(heap._storage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_storage, _comparator);
+        return Objects.hash(_storage);
     }
 
     @Override

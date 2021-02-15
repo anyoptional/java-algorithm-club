@@ -2,6 +2,7 @@ package com.anyoptional.collections;
 
 import com.anyoptional.lang.Nullable;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -9,7 +10,15 @@ import java.util.Objects;
  */
 public class PriorityQueue<E> {
 
-    private final Heap<E> _storage = new Heap<>();
+    private final Heap<E> _storage;
+
+    public PriorityQueue() {
+        _storage = new Heap<>();
+    }
+
+    public PriorityQueue(Comparator<? super E> comparator) {
+        _storage = new Heap<>(comparator);
+    }
 
     public boolean isEmpty() {
         return _storage.isEmpty();

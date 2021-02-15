@@ -34,7 +34,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testCreateFromArray() {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(8, 5, 10, 3, 12, 9, 6, 16));
+        addAll(tree, Arrays.asList(8, 5, 10, 3, 12, 9, 6, 16));
         assertEquals(tree.size(), 8);
         assertEquals(toKeyList(tree), Arrays.asList(3, 5, 6, 8, 9, 10, 12, 16));
 
@@ -98,7 +98,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testInsertDuplicates() {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(8, 5, 10));
+        addAll(tree, Arrays.asList(8, 5, 10));
         tree.insert(8, 8);
         tree.insert(5, 5);
         tree.insert(10, 10);
@@ -109,7 +109,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testTraversing() {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(8, 5, 10, 3, 12, 9, 6, 16));
+        addAll(tree, Arrays.asList(8, 5, 10, 3, 12, 9, 6, 16));
 
         List<Integer> inOrder = new ArrayList<>();
         tree._root.traverseInOrder($0 -> inOrder.add($0.entry.getKey()));
@@ -130,7 +130,7 @@ public class BinarySearchTreeTest {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
         List<Integer> integers = Arrays.asList(8, 5, 10, 3, 12, 9, 6, 16);
         Collections.sort(integers, comparator);
-        tree.addAll(integers);
+        addAll(tree, integers);
         assertEquals(tree.size(), 8);
         assertEquals(toKeyList(tree), Arrays.asList(3, 5, 6, 8, 9, 10, 12, 16));
 
@@ -147,7 +147,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testRemoveLeaf() {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(8, 5, 10, 4));
+        addAll(tree, Arrays.asList(8, 5, 10, 4));
 
         BinaryNode<Integer, Integer> node8 = tree.searchBinaryNode(8);
         assertEquals(tree._root, node8);
@@ -180,7 +180,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testRemoveOneChildLeft() {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(8, 5, 10, 4, 9));
+        addAll(tree, Arrays.asList(8, 5, 10, 4, 9));
         BinaryNode<Integer, Integer> node4 = tree.searchBinaryNode(4);
         BinaryNode<Integer, Integer> node5 = tree.searchBinaryNode(5);
         assertTrue(node5.left == node4);
@@ -211,7 +211,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testRemoveOneChildRight() {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(8, 5, 10, 6, 11));
+        addAll(tree, Arrays.asList(8, 5, 10, 6, 11));
 
         BinaryNode<Integer, Integer> node6 = tree.searchBinaryNode(6);
         BinaryNode<Integer, Integer> node5 = tree.searchBinaryNode(5);
@@ -243,7 +243,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testRemoveTwoChildrenSimple() {
         BinarySearchTree<Integer, Integer> tree =new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(8, 5, 10, 4, 6, 9, 11));
+        addAll(tree, Arrays.asList(8, 5, 10, 4, 6, 9, 11));
         BinaryNode<Integer, Integer> node4 = tree.searchBinaryNode(4);
         BinaryNode<Integer, Integer> node5 = tree.searchBinaryNode(5);
         BinaryNode<Integer, Integer> node6 = tree.searchBinaryNode(6);
@@ -260,7 +260,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testRemoveRoot() {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(8, 5, 10, 4, 9, 20, 11, 15, 13));
+        addAll(tree, Arrays.asList(8, 5, 10, 4, 9, 20, 11, 15, 13));
 
         BinaryNode<Integer, Integer> oldRoot = tree.searchBinaryNode(8);
 
@@ -278,7 +278,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testPredecessor() {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(3, 1, 2, 5, 4));
+        addAll(tree, Arrays.asList(3, 1, 2, 5, 4));
 
         BinaryNode<Integer, Integer> node = tree.searchBinaryNode(5);
 
@@ -293,7 +293,7 @@ public class BinarySearchTreeTest {
     @Test
     public void testSuccessor() {
         BinarySearchTree<Integer, Integer> tree = new BinarySearchTree<>();
-        tree.addAll(Arrays.asList(3, 1, 2, 5, 4));
+        addAll(tree, Arrays.asList(3, 1, 2, 5, 4));
         BinaryNode<Integer, Integer> node = tree.searchBinaryNode(1);
 
         assertEquals((int) node.entry.getKey(), 1);
@@ -314,6 +314,39 @@ public class BinarySearchTreeTest {
                 tree.insert(random.nextInt(100), random.nextInt(100));
             }
             System.out.println(tree);
+        }
+    }
+
+    @Test
+    public void testEquality() {
+        BinaryTree<Integer, Integer> t0 = new BinarySearchTree<>();
+        BinaryTree<Integer, Integer> t1 = new BinarySearchTree<>();
+        assertEquals(t0, t1);
+
+        t0.insert(1, 1);
+        t0.insert(3, 3);
+        t0.insert(5, 5);
+
+        t1.insert(5, 5);
+        t1.insert(3, 3);
+        t1.insert(1, 1);
+        assertEquals(t0, t1);
+
+        t0.insert(4, 4);
+        assertNotEquals(t0, t1);
+
+        t1.insert(4, 6);
+        assertNotEquals(t0, t1);
+
+        t1.remove(4);
+        t1.insert(4, 4);
+        assertEquals(t0, t1);
+    }
+
+
+    private <K, V> void addAll(BinarySearchTree<K, V> tree, Collection<K> c) {
+        for (K k : c) {
+            tree.insert(k, null);
         }
     }
 

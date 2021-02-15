@@ -2,6 +2,7 @@ package com.anyoptional.collections;
 
 import com.anyoptional.lang.Nullable;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 
 public interface BinaryTree<K, V> extends Iterable<Entry<K, V>> {
@@ -22,6 +23,12 @@ public interface BinaryTree<K, V> extends Iterable<Entry<K, V>> {
     boolean containsKey(K key);
 
     /**
+     * 查询树中最高的、指定key对应的值
+     */
+    @Nullable
+    V searchValue(K key);
+
+    /**
      * 查询树中最高的、指定key对应的Entry
      */
     @Nullable
@@ -31,6 +38,11 @@ public interface BinaryTree<K, V> extends Iterable<Entry<K, V>> {
      * 向树中插入一对键值对
      */
     void insert(K key, @Nullable V value);
+
+    /**
+     * 批量插入
+     */
+    void addAll(Collection<? extends Entry<K, V>> entries);
 
     /**
      * 删除树中`最高`的、拥有指定key的节点

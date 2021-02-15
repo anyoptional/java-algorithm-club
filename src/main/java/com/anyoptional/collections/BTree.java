@@ -5,10 +5,7 @@ import com.anyoptional.lang.VisibleForTesting;
 import com.anyoptional.util.Assert;
 import com.anyoptional.util.Comparators;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -19,7 +16,7 @@ import java.util.function.Consumer;
  * 一个节点。
  * @apiNote BTree do not permit null key.
  */
-public class BTree<K, V> {
+public class BTree<K, V> implements Iterable<Entry<K, V>> {
 
     private static final int MIN_ORDER = 3;
 
@@ -293,6 +290,48 @@ public class BTree<K, V> {
         }
     }
 
+    @Override
+    public Iterator<Entry<K, V>> iterator() {
+        return new Iter();
+    }
+
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof BTree)) return false;
+        BTree<?,?> bTree = (BTree<?,?>) o;
+        if (bTree._order != _order) return false;
+        if (bTree.size() != size()) return false;
+        Iterator<Entry<K,V>> iter = iterator();
+        for (Entry<?, ?> e : bTree) {
+            if (!e.equals(iter.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int hashCode() {
+        int hash = 31;
+        for (Entry<K, V> e : this) {
+            hash += e.hashCode();
+        }
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (Entry<K, V> e : this) {
+            sb.append(e);
+            sb.append(", ");
+        }
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append("]");
+        return sb.toString();
+    }
+
     /**
      * BTree节点，满足entries.size() + 1 = children.size()
      */
@@ -358,6 +397,32 @@ public class BTree<K, V> {
                     child.traverseInOrder(consumer);
                 }
             }
+        }
+
+    }
+
+    private class Iter implements Iterator<Entry<K, V>> {
+
+        private final Iterator<Entry<K, V>> iterator;
+
+        private Iter() {
+            List<Entry<K, V>> entries = new ArrayList<>();
+            if (!isEmpty()) {
+                traverseInOrder(entries::add);
+            }
+            iterator = entries.iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return iterator.hasNext();
+        }
+
+        @Override
+        public Entry<K, V> next() {
+            Entry<K, V> next = iterator.next();
+            iterator.remove();
+            return next;
         }
 
     }

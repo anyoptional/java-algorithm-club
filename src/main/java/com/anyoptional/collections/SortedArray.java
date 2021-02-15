@@ -136,13 +136,12 @@ public class SortedArray<E> implements Collection<E> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SortedArray<?> that = (SortedArray<?>) o;
-        return _storage.equals(that._storage) &&
-                Objects.equals(_comparator, that._comparator);
+        return _storage.equals(that._storage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_storage, _comparator);
+        return Objects.hash(_storage);
     }
 
     @Override

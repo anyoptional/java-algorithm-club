@@ -8,7 +8,6 @@ import com.anyoptional.util.Comparators;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -58,6 +57,7 @@ public class BinarySearchTree<K, V> implements BinaryTree<K, V> {
      * 查询树中最高的、指定key对应的值
      */
     @Nullable
+    @Override
     public V searchValue(K key) {
         Entry<K, V> entry = search(key);
         return entry != null ? entry.getValue() : null;
@@ -81,17 +81,11 @@ public class BinarySearchTree<K, V> implements BinaryTree<K, V> {
         doInsert(key, value);
     }
 
-    public void addAll(Collection<? extends K> c) {
-        Assert.notNull(c, "collection is required");
-        for (K key : c) {
-            insert(key, null);
-        }
-    }
-
-    public void addAll(Map<K, V> map) {
-        Assert.notNull(map, "map is required");
-        for (Map.Entry<K, V> e : map.entrySet()) {
-            insert(e.getKey(), e.getValue());
+    @Override
+    public void addAll(Collection<? extends Entry<K, V>> entries) {
+        Assert.notEmpty(entries, "entries is required");
+        for (Entry<K, V> entry : entries) {
+            insert(entry.getKey(), entry.getValue());
         }
     }
 
@@ -335,6 +329,28 @@ public class BinarySearchTree<K, V> implements BinaryTree<K, V> {
             cur = next;
             return ret;
         }
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof BinaryTree)) return false;
+        BinaryTree<?,?> bst = (BinaryTree<?,?>) o;
+        if (bst.size() != size()) return false;
+        Iterator<Entry<K,V>> iter = iterator();
+        for (Entry<?, ?> e : bst) {
+            if (!e.equals(iter.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int hashCode() {
+        int hash = 31;
+        for (Entry<K, V> e : this) {
+            hash += e.hashCode();
+        }
+        return hash;
     }
 
     @Override

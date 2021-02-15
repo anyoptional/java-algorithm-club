@@ -13,7 +13,11 @@ public class AVLTreeTest {
     @Test
     public void testInsertSorted() {
         AVLTree<Integer, Integer> avlTree = new AVLTree<>();
-        avlTree.addAll(Arrays.asList(1, 3, 5, 7, 9));
+        avlTree.insert(1, null);
+        avlTree.insert(3, null);
+        avlTree.insert(5, null);
+        avlTree.insert(7, null);
+        avlTree.insert(9, null);
         assertFalse(avlTree.isEmpty());
         assertEquals(5, avlTree.size());
         assertTrue(avlTree._root == avlTree.searchBinaryNode(3));
@@ -38,7 +42,11 @@ public class AVLTreeTest {
     @Test
     public void testRemove() {
         AVLTree<Integer, Integer> avlTree = new AVLTree<>();
-        avlTree.addAll(Arrays.asList(1, 3, 5, 7, 9));
+        avlTree.insert(1, null);
+        avlTree.insert(3, null);
+        avlTree.insert(5, null);
+        avlTree.insert(7, null);
+        avlTree.insert(9, null);
         assertTrue(avlTree._root == avlTree.searchBinaryNode(3));
 
         avlTree.remove(1);
