@@ -42,6 +42,7 @@ public class LongestPalindrome {
         int begin = 0;
         char[] chars = s.toCharArray();
 
+        // Note: 外层遍历数组，内层求数组元素值
         // 外层循环 dp 数组表示的含义出发，也就是枚举子串长度
         for (int l = 2; l <= len; l++) {
             // 内层循环枚举子串左边界
